@@ -1,0 +1,491 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HVV蓝队 | 52hertzi</title><meta name="keywords" content="护网培训"><meta name="author" content="Shawn"><meta name="copyright" content="Shawn"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="0x00第一次参加护网。当时正在办公室中与老师闲聊，一个电话打来，说是面试护网的，简单的问了SQL注入的防御，XSS的几种类型、Linux命令、Docker等问题就告诉我过了，还是有点小紧张，脑子里当时空白了很多。 接下来需要准备二次面试，这次主要是记录一下准备面试的一些题目。 0x011、入侵检测系统IDS  入侵检测系统是一种对网络传输进行即时监视，在发现可疑传输时发出警报或者采取主动反应措施">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HVV蓝队">
+<meta property="og:url" content="http://52hertzi.com/2021/03/08/HVV%E8%93%9D%E9%98%9F/index.html">
+<meta property="og:site_name" content="52hertzi">
+<meta property="og:description" content="0x00第一次参加护网。当时正在办公室中与老师闲聊，一个电话打来，说是面试护网的，简单的问了SQL注入的防御，XSS的几种类型、Linux命令、Docker等问题就告诉我过了，还是有点小紧张，脑子里当时空白了很多。 接下来需要准备二次面试，这次主要是记录一下准备面试的一些题目。 0x011、入侵检测系统IDS  入侵检测系统是一种对网络传输进行即时监视，在发现可疑传输时发出警报或者采取主动反应措施">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/03/08/vOTql8wJML4hQAp.jpg">
+<meta property="article:published_time" content="2021-03-08T11:38:16.000Z">
+<meta property="article:modified_time" content="2021-06-30T14:36:23.666Z">
+<meta property="article:author" content="Shawn">
+<meta property="article:tag" content="护网培训">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/03/08/vOTql8wJML4hQAp.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://52hertzi.com/2021/03/08/HVV%E8%93%9D%E9%98%9F/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="preconnect" href="//zz.bdstatic.com"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Shawn","link":"链接: ","source":"来源: 52hertzi","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-06-30 22:36:23'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://i.loli.net/2020/11/09/qgoaAWLQdRIs7uD.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">17</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">28</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 生活</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-envira"></i><span> 说说</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://i.loli.net/2021/03/08/vOTql8wJML4hQAp.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">52hertzi</a></span><span id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 生活</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-envira"></i><span> 说说</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><h1 class="post-title">HVV蓝队</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-03-08T11:38:16.000Z" title="发表于 2021-03-08 19:38:16">2021-03-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-06-30T14:36:23.666Z" title="更新于 2021-06-30 22:36:23">2021-06-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AE%9E%E4%B9%A0%E7%BB%8F%E5%8E%86/">实习经历</a></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>8分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="0x00"><a href="#0x00" class="headerlink" title="0x00"></a>0x00</h1><p>第一次参加护网。当时正在办公室中与老师闲聊，一个电话打来，说是面试护网的，简单的问了SQL注入的防御，XSS的几种类型、Linux命令、Docker等问题就告诉我过了，还是有点小紧张，脑子里当时空白了很多。</p>
+<p>接下来需要准备二次面试，这次主要是记录一下准备面试的一些题目。</p>
+<h1 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h1><h2 id="1、入侵检测系统IDS"><a href="#1、入侵检测系统IDS" class="headerlink" title="1、入侵检测系统IDS"></a>1、入侵检测系统IDS</h2><blockquote>
+<p> 入侵检测系统是一种对网络传输进行即时监视，在发现可疑传输时发出警报或者采取主动反应措施的网络安全设备。</p>
+</blockquote>
+<p>IDS使用旁挂模式进行部署。</p>
+<h2 id="2、入侵防御系统IPS"><a href="#2、入侵防御系统IPS" class="headerlink" title="2、入侵防御系统IPS"></a>2、入侵防御系统IPS</h2><blockquote>
+<p>IPS是新一代的侵入检测系统（IDS），可弥补IDS存在于前摄及假阳性/阴性等性质方面的弱点。IPS能够识别事件的侵入、关联、冲击、方向和适当的分析，然后将合适的信息和命令传送给防火墙、交换机和其它的网络设备以减轻该事件的风险。</p>
+</blockquote>
+<p>IPS使用桥模式进行部署。</p>
+<h1 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h1><h2 id="1、XSS原理及存储型xss的利用"><a href="#1、XSS原理及存储型xss的利用" class="headerlink" title="1、XSS原理及存储型xss的利用"></a>1、XSS原理及存储型xss的利用</h2><blockquote>
+<p>xss共有三种类型：反射型、DOM型、存储型，其中存储型XSS危害最大。Self-XSS属于DOM型XSS。</p>
+</blockquote>
+<p><strong>xss攻击的原理</strong>是通过添加或修改页面JavaScript的恶意脚本，在浏览器渲染页面的时候执行该脚本，从而实现窃取cookie或者调用Ajax实现其他类型的CSRF。</p>
+<h3 id="CORS（浏览器同源策略）"><a href="#CORS（浏览器同源策略）" class="headerlink" title="CORS（浏览器同源策略）"></a>CORS（浏览器同源策略）</h3><p>JS ==&gt; Ajax去请求其他网站的东西（CSRF）</p>
+<p>如果CORS头默认不放行xxx.com,则xxx.com的Ajax请求就无法访问其他网站的资源。</p>
+<h3 id="存储型XSS的利用"><a href="#存储型XSS的利用" class="headerlink" title="存储型XSS的利用"></a>存储型XSS的利用</h3><blockquote>
+<p>存储型xss可以控制页面的JS的渲染，可以使用JS实现很多东西。</p>
+<p>例如：手机震动、返回劫持（浏览器中无法返回上一页面）、拍照、截屏（会弹窗）以及各类配合xss平台的操作（cookie劫持、打内网、键盘记录、ip定位等）</p>
+</blockquote>
+<h2 id="2、渗透流程"><a href="#2、渗透流程" class="headerlink" title="2、渗透流程"></a>2、渗透流程</h2><ul>
+<li>信息收集</li>
+<li>分析信息</li>
+<li>绘制思维导图分析资产</li>
+<li>对业务逻辑点进行逻辑漏洞测试</li>
+<li>对其身份验证功能的token、session进行测试</li>
+<li>对其数据操作点进行注入测试</li>
+<li>对其页面可控点进行xss测试</li>
+<li>对其远程访问点进行SSRF测试</li>
+<li>对其接口进行FUZZ模糊测试</li>
+<li>对其登陆点进行弱口令测试</li>
+<li>识别框架，若框架有反序列化漏洞利用链，可寻找反序列化点</li>
+<li>对其文件上传功能进行任意文件上传测试</li>
+<li>对其现有CMS查找相关漏洞利用工具（exploit-db）等</li>
+<li>对其边界资产例如gitlab、jenkins进行弱口令测试</li>
+<li>对其端口进行扫描查找其他相关服务测试</li>
+<li>.git、.svn源代码泄露，可以下载其源代码文件，并且可以通过查看commit切换分支等</li>
+</ul>
+<h2 id="3、入侵排查思路"><a href="#3、入侵排查思路" class="headerlink" title="3、入侵排查思路"></a>3、入侵排查思路</h2><blockquote>
+<p>需明确一点，已经被入侵还是正在被入侵</p>
+</blockquote>
+<h3 id="已经被入侵"><a href="#已经被入侵" class="headerlink" title="已经被入侵"></a>已经被入侵</h3><h4 id="目的已经达成，木马、后门均已被销毁"><a href="#目的已经达成，木马、后门均已被销毁" class="headerlink" title="目的已经达成，木马、后门均已被销毁"></a>目的已经达成，木马、后门均已被销毁</h4><blockquote>
+<p>1、既然已经被入侵，定位被入侵的时间点</p>
+<p>2、若为云服务器，对其进行快照（目的：封存内存）</p>
+<p>3、当定位到时间点，查设备流量，找到木马链接信息</p>
+<p>4、查找系统内对应的日志，找到相关线索</p>
+<p>5、如果日志被删除，因为快照已经建立，使用winhex对硬盘数据进行恢复</p>
+</blockquote>
+<h4 id="目的未达成，数据正在被回传。木马、后门均在服务器上运行"><a href="#目的未达成，数据正在被回传。木马、后门均在服务器上运行" class="headerlink" title="目的未达成，数据正在被回传。木马、后门均在服务器上运行"></a>目的未达成，数据正在被回传。木马、后门均在服务器上运行</h4><blockquote>
+<p>1、Volatility 内存取证，建立快照，抓取内存，定位到shellcode找到其ip</p>
+<p>2、如果其使用常见的C2工具，可以根据流量分析出入侵者的意图</p>
+<p>3、关闭服务器，或者在防火墙上禁其ip，登陆服务器，对shellcode进行移除</p>
+<p>4、重启后进入安全模式，排查注册表、计划任务、服务、放大镜后门、shift后门</p>
+</blockquote>
+<h3 id="正在被入侵"><a href="#正在被入侵" class="headerlink" title="正在被入侵"></a>正在被入侵</h3><blockquote>
+<p>可能是入侵者在尝试进行攻击的时候</p>
+</blockquote>
+<h4 id="弱口令爆破"><a href="#弱口令爆破" class="headerlink" title="弱口令爆破"></a>弱口令爆破</h4><blockquote>
+<p>1、弱口令爆破会产生大量日志，日志一定要采用远程日志，例如Linux的rsyslog，开启远程日志的好处：不怕日志被攻击者删除。</p>
+<p>2、一定要找到入侵者的源ip，在防火墙下发阻断策略。</p>
+</blockquote>
+<h2 id="4、weblogic、redis未授权利用的是哪个端口"><a href="#4、weblogic、redis未授权利用的是哪个端口" class="headerlink" title="4、weblogic、redis未授权利用的是哪个端口"></a>4、weblogic、redis未授权利用的是哪个端口</h2><table>
+<thead>
+<tr>
+<th>中间件</th>
+<th>端口</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>weblogic</td>
+<td>7001</td>
+</tr>
+<tr>
+<td>redis</td>
+<td>6379</td>
+</tr>
+</tbody></table>
+<h2 id="5、常见的端口漏洞"><a href="#5、常见的端口漏洞" class="headerlink" title="5、常见的端口漏洞"></a>5、常见的端口漏洞</h2><table>
+<thead>
+<tr>
+<th align="left">端口</th>
+<th>服务</th>
+<th>利用方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">21</td>
+<td>FPT</td>
+<td>anonymous匿名未授权访问、爆破</td>
+</tr>
+<tr>
+<td align="left">22</td>
+<td>SSH</td>
+<td>root密码爆破、后门应用、Google查找默认密码</td>
+</tr>
+<tr>
+<td align="left">23</td>
+<td>Telnet</td>
+<td>一般会发生在路由器或者交换机、嵌入式设备、管理端口。攻击方法：弱口令</td>
+</tr>
+<tr>
+<td align="left">25</td>
+<td>SMTP</td>
+<td>默认用户、默认密码、邮件账号爆破</td>
+</tr>
+<tr>
+<td align="left">80</td>
+<td>HTTP</td>
+<td>web常见的owasp top10、中间件反序列化、中间件溢出、fastcigi配置不当造成fastcigi端口泄露。</td>
+</tr>
+<tr>
+<td align="left">110</td>
+<td>POP3</td>
+<td>默认用户、默认密码、邮件账号爆破</td>
+</tr>
+<tr>
+<td align="left">443</td>
+<td>HTTPS</td>
+<td>openssl、心脏滴血（影响范围小）、SSL/TLS低版本存在漏洞。</td>
+</tr>
+<tr>
+<td align="left">135、139、445</td>
+<td>Netbios SMB</td>
+<td>ms17_010</td>
+</tr>
+<tr>
+<td align="left">3389</td>
+<td>RDP(远程登陆)</td>
+<td>CVE-2019-0708</td>
+</tr>
+</tbody></table>
+<h2 id="6、信息收集收集什么"><a href="#6、信息收集收集什么" class="headerlink" title="6、信息收集收集什么"></a>6、信息收集收集什么</h2><blockquote>
+<p>服务器资产</p>
+<p>ip资产</p>
+<p>域名资产</p>
+</blockquote>
+<h2 id="7、常见的漏洞以及自己的见解及防护手段"><a href="#7、常见的漏洞以及自己的见解及防护手段" class="headerlink" title="7、常见的漏洞以及自己的见解及防护手段"></a>7、常见的漏洞以及自己的见解及防护手段</h2><p><a href="https://52hertzi.com/2021/02/28/OWASP-Top10%E5%8E%9F%E7%90%86/">OWASP TOP10</a></p>
+<h2 id="8、发现客户端被传了webshell如何处置"><a href="#8、发现客户端被传了webshell如何处置" class="headerlink" title="8、发现客户端被传了webshell如何处置"></a>8、发现客户端被传了webshell如何处置</h2><h3 id="如何发现的"><a href="#如何发现的" class="headerlink" title="如何发现的"></a>如何发现的</h3><blockquote>
+<p>1、特征PHP：</p>
+<p>php中的危险函数：exec、eval、assert(&lt;php7.4)、creat_function、call_user_func、system_exec、shell_exec</p>
+<p>2、冰蝎中的openssl_decrypt</p>
+<p>3、PHP木马关键函数</p>
+</blockquote>
+<h3 id="webshell都干了什么，该查什么日志"><a href="#webshell都干了什么，该查什么日志" class="headerlink" title="webshell都干了什么，该查什么日志"></a>webshell都干了什么，该查什么日志</h3><table>
+<thead>
+<tr>
+<th>adminer.php</th>
+<th>在/tmp目录下具有adminer的临时文件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>nginx日志</td>
+<td>中间件日志，根据木马的名字查，往上找到木马上传点</td>
+</tr>
+<tr>
+<td>PHP-FPM日志</td>
+<td>绕过diable_function进行提权，使用GC bypass等php-fpm日志会有痕迹</td>
+</tr>
+<tr>
+<td>mysql的二进制日志</td>
+<td>确定攻击者在攻击服务器的时候执行过什么语句</td>
+</tr>
+</tbody></table>
+<p><strong>ps：如果中了一个免杀的webshell，日志被删除，所有工具都查杀不出，该怎么办？</strong></p>
+<blockquote>
+<p>使用winhex进行数据恢复</p>
+</blockquote>
+<h2 id="9、获取了攻击者ip如何进行溯源"><a href="#9、获取了攻击者ip如何进行溯源" class="headerlink" title="9、获取了攻击者ip如何进行溯源"></a>9、获取了攻击者ip如何进行溯源</h2><blockquote>
+<p>攻击者的ip是什么，ip信息</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.ipip.net/">ip查询</a></p>
+<p>获取ip地址后，判断其地址范围。</p>
+<p>直接扫描，先常规渗透手段，可以联系机房进行社工，可能回得到一些有用的信息。</p>
+<h2 id="10、如果爆发了0Day如何处理"><a href="#10、如果爆发了0Day如何处理" class="headerlink" title="10、如果爆发了0Day如何处理"></a>10、如果爆发了0Day如何处理</h2><blockquote>
+<p>如果爆发0Day，说明其exp，poc已经成熟</p>
+<p>1、收集得分</p>
+<p>2、避免0Day打到自己，如果有安全设备，自己写规则用于识别0day并且阻断。</p>
+</blockquote>
+<h2 id="11、Linux下权限维持"><a href="#11、Linux下权限维持" class="headerlink" title="11、Linux下权限维持"></a>11、Linux下权限维持</h2><blockquote>
+<p>1、Crontab 定时任务，定时触发脚本。</p>
+<p>2、ssh后门，进程注入，hook密码校验函数得到管理员密码。</p>
+<p>3、修改管理员二进制文件创建链接，使管理员在输入ls或者cd等这种命令的时候执行恶意脚本。</p>
+<p>4、环境变量劫持。</p>
+<p>5、内核后门（难度大，需要重新编译内核并重启，隐蔽性极强）</p>
+<p>6、pam后门</p>
+<p>7、/init.d/系统启动时默认运行脚本</p>
+</blockquote>
+<h2 id="12、内网代理正向与反向"><a href="#12、内网代理正向与反向" class="headerlink" title="12、内网代理正向与反向"></a>12、内网代理正向与反向</h2><h3 id="正向代理"><a href="#正向代理" class="headerlink" title="正向代理"></a>正向代理</h3><blockquote>
+<p>直接可以从本机到对端的代理叫正向代理，通常用于目标主机没有防火墙，适用于没有进行Nat地址转换的情况下使用。</p>
+</blockquote>
+<h3 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h3><blockquote>
+<p>需要一台服务器，目标看主机主动向服务器进行代理连接，再使用本机向服务器请求与目标主机代理连接，适用于目标主机有防火墙或有端口限制。</p>
+</blockquote>
+<h2 id="13、Redis未授权访问与权限获取"><a href="#13、Redis未授权访问与权限获取" class="headerlink" title="13、Redis未授权访问与权限获取"></a>13、Redis未授权访问与权限获取</h2><blockquote>
+<p><strong>默认端口：6379</strong></p>
+</blockquote>
+<blockquote>
+<p>user_pass默认未设置，可以向系统写文件，构成一些安全危险。</p>
+<p>1、写ssh私钥</p>
+<p>2、写crontab 启动定时</p>
+<p>3、写init.d 启动执行</p>
+<p>4、redis docker启动时写dockerfile</p>
+</blockquote>
+<h2 id="14、反查真实ip"><a href="#14、反查真实ip" class="headerlink" title="14、反查真实ip"></a>14、反查真实ip</h2><blockquote>
+<p>fofa互联网搜索引擎等。</p>
+</blockquote>
+<blockquote>
+<p>1、渗透者端获取，例如利用SSRF，使用Dnslog获取真实ip</p>
+<p>2、查看历史解析</p>
+<p>3、cloudfare github可以获取真实ip</p>
+<p>4、fofa语句 cert=”xxx.com”</p>
+<p>5、http 如果一个网站有icon，可以根据icon hash来查找真实ip</p>
+<p>6、多地ping可以查询一个url是否时CDN或者是否是真实ip，多地ping只能判断是否绑定多ip，其中ip不一定就是CDN，也有可能是服务器的负载均衡。</p>
+<p>7、nslookup查询ns的记录是否为CDN的DNS服务器</p>
+<p>8、whois查询，域名的DNS服务器是否是CDN的DNS服务器</p>
+<p>9、子域名绑定，测试子域名可能回源（主站大多会有CDN防护，子站则不一定）</p>
+</blockquote>
+<h2 id="15、webshell查找"><a href="#15、webshell查找" class="headerlink" title="15、webshell查找"></a>15、webshell查找</h2><blockquote>
+<p>1、自动化查找。例D盾、河马、fotify</p>
+<p>2、手动查找</p>
+<p>3、Linux命令查找 grep -rn “eval(“ *</p>
+<p>​    webshell特征php危险函数</p>
+</blockquote>
+<h2 id="16、sql注入特征"><a href="#16、sql注入特征" class="headerlink" title="16、sql注入特征"></a>16、sql注入特征</h2><blockquote>
+<p>1、请求里面可能包含sql函数。</p>
+<p>2、请求里可能带有/**</p>
+<p>3、sql占用系统资源情况要比往常多</p>
+<p>4、sql二进制日志里面可能会有及其异常的访问information_schema表名的情况。</p>
+</blockquote>
+<h2 id="17、Linux下敏感文件"><a href="#17、Linux下敏感文件" class="headerlink" title="17、Linux下敏感文件"></a>17、Linux下敏感文件</h2><table>
+<thead>
+<tr>
+<th align="left">路径</th>
+<th>命令信息</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>/proc/cpuinfo</strong></td>
+<td><strong>CPU型号</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>/var/log/messege</strong></td>
+<td><strong>内核信息</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>/var/log/last</strong></td>
+<td><strong>登陆日志</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>/etc/sysconfig/selinux</strong></td>
+<td><strong>selinux状态</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>/etc/passwd</strong></td>
+<td><strong>用户账户信息</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>/etc/shadow</strong></td>
+<td><strong>用户密码信息</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>/etc/sysconfig/iptables</strong></td>
+<td><strong>系统防火墙信息</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>/etc/sudor</strong></td>
+<td><strong>sudor特权用户信息</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>/etc/redhat-release</strong></td>
+<td><strong>Centos版本号</strong></td>
+</tr>
+</tbody></table>
+<h2 id="18、查到攻击者QQ怎么分析"><a href="#18、查到攻击者QQ怎么分析" class="headerlink" title="18、查到攻击者QQ怎么分析"></a>18、查到攻击者QQ怎么分析</h2><blockquote>
+<p>1、社工库</p>
+<p>2、如果开通qq空间，查找访客记录查看有无真实号主的访问记录</p>
+<p>3、qq安全中心，重置密码获取手机号码</p>
+</blockquote>
+<h1 id="0x03"><a href="#0x03" class="headerlink" title="0x03"></a>0x03</h1><p>有手就行！！！</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Shawn</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://52hertzi.com/2021/03/08/HVV%E8%93%9D%E9%98%9F/">http://52hertzi.com/2021/03/08/HVV%E8%93%9D%E9%98%9F/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://52hertzi.com" target="_blank">52hertzi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%8A%A4%E7%BD%91%E5%9F%B9%E8%AE%AD/">护网培训</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/03/08/vOTql8wJML4hQAp.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://i.loli.net/2020/11/09/NkrICVse9BUfKMx.png" target="_blank"><img class="post-qr-code-img" src="https://i.loli.net/2020/11/09/NkrICVse9BUfKMx.png" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://i.loli.net/2020/11/09/kLFt7qs1woZvu4x.jpg" target="_blank"><img class="post-qr-code-img" src="https://i.loli.net/2020/11/09/kLFt7qs1woZvu4x.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/04/20/%E5%A4%B1%E8%B4%A5%E7%9A%84%E6%B8%97%E9%80%8F%E7%BB%B4%E6%8C%81%E5%A7%BF%E5%8A%BF/"><img class="prev-cover" src="https://i.loli.net/2021/04/20/qovg5OXWeKzacwE.png" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">失败的渗透维持姿势</div></div></a></div><div class="next-post pull-right"><a href="/2021/02/28/OWASP-Top10%E5%8E%9F%E7%90%86/"><img class="next-cover" src="https://i.loli.net/2021/02/28/4qai86gjcXKtel2.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">OWASP Top10原理</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://i.loli.net/2020/11/09/qgoaAWLQdRIs7uD.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Shawn</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">17</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">28</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/52hertzi"><i class="fab fa-github"></i><span>Follow Me</span></a></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">2020 实鼠不易 , 2021 牛转乾坤！淦</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x00"><span class="toc-number">1.</span> <span class="toc-text">0x00</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01"><span class="toc-number">2.</span> <span class="toc-text">0x01</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%E7%B3%BB%E7%BB%9FIDS"><span class="toc-number">2.1.</span> <span class="toc-text">1、入侵检测系统IDS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E5%85%A5%E4%BE%B5%E9%98%B2%E5%BE%A1%E7%B3%BB%E7%BB%9FIPS"><span class="toc-number">2.2.</span> <span class="toc-text">2、入侵防御系统IPS</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02"><span class="toc-number">3.</span> <span class="toc-text">0x02</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81XSS%E5%8E%9F%E7%90%86%E5%8F%8A%E5%AD%98%E5%82%A8%E5%9E%8Bxss%E7%9A%84%E5%88%A9%E7%94%A8"><span class="toc-number">3.1.</span> <span class="toc-text">1、XSS原理及存储型xss的利用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CORS%EF%BC%88%E6%B5%8F%E8%A7%88%E5%99%A8%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5%EF%BC%89"><span class="toc-number">3.1.1.</span> <span class="toc-text">CORS（浏览器同源策略）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E5%9E%8BXSS%E7%9A%84%E5%88%A9%E7%94%A8"><span class="toc-number">3.1.2.</span> <span class="toc-text">存储型XSS的利用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E6%B8%97%E9%80%8F%E6%B5%81%E7%A8%8B"><span class="toc-number">3.2.</span> <span class="toc-text">2、渗透流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%E3%80%81%E5%85%A5%E4%BE%B5%E6%8E%92%E6%9F%A5%E6%80%9D%E8%B7%AF"><span class="toc-number">3.3.</span> <span class="toc-text">3、入侵排查思路</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B7%B2%E7%BB%8F%E8%A2%AB%E5%85%A5%E4%BE%B5"><span class="toc-number">3.3.1.</span> <span class="toc-text">已经被入侵</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%AE%E7%9A%84%E5%B7%B2%E7%BB%8F%E8%BE%BE%E6%88%90%EF%BC%8C%E6%9C%A8%E9%A9%AC%E3%80%81%E5%90%8E%E9%97%A8%E5%9D%87%E5%B7%B2%E8%A2%AB%E9%94%80%E6%AF%81"><span class="toc-number">3.3.1.1.</span> <span class="toc-text">目的已经达成，木马、后门均已被销毁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%AE%E7%9A%84%E6%9C%AA%E8%BE%BE%E6%88%90%EF%BC%8C%E6%95%B0%E6%8D%AE%E6%AD%A3%E5%9C%A8%E8%A2%AB%E5%9B%9E%E4%BC%A0%E3%80%82%E6%9C%A8%E9%A9%AC%E3%80%81%E5%90%8E%E9%97%A8%E5%9D%87%E5%9C%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E8%BF%90%E8%A1%8C"><span class="toc-number">3.3.1.2.</span> <span class="toc-text">目的未达成，数据正在被回传。木马、后门均在服务器上运行</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A3%E5%9C%A8%E8%A2%AB%E5%85%A5%E4%BE%B5"><span class="toc-number">3.3.2.</span> <span class="toc-text">正在被入侵</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%B1%E5%8F%A3%E4%BB%A4%E7%88%86%E7%A0%B4"><span class="toc-number">3.3.2.1.</span> <span class="toc-text">弱口令爆破</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4%E3%80%81weblogic%E3%80%81redis%E6%9C%AA%E6%8E%88%E6%9D%83%E5%88%A9%E7%94%A8%E7%9A%84%E6%98%AF%E5%93%AA%E4%B8%AA%E7%AB%AF%E5%8F%A3"><span class="toc-number">3.4.</span> <span class="toc-text">4、weblogic、redis未授权利用的是哪个端口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5%E3%80%81%E5%B8%B8%E8%A7%81%E7%9A%84%E7%AB%AF%E5%8F%A3%E6%BC%8F%E6%B4%9E"><span class="toc-number">3.5.</span> <span class="toc-text">5、常见的端口漏洞</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6%E3%80%81%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E6%94%B6%E9%9B%86%E4%BB%80%E4%B9%88"><span class="toc-number">3.6.</span> <span class="toc-text">6、信息收集收集什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7%E3%80%81%E5%B8%B8%E8%A7%81%E7%9A%84%E6%BC%8F%E6%B4%9E%E4%BB%A5%E5%8F%8A%E8%87%AA%E5%B7%B1%E7%9A%84%E8%A7%81%E8%A7%A3%E5%8F%8A%E9%98%B2%E6%8A%A4%E6%89%8B%E6%AE%B5"><span class="toc-number">3.7.</span> <span class="toc-text">7、常见的漏洞以及自己的见解及防护手段</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8%E3%80%81%E5%8F%91%E7%8E%B0%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A2%AB%E4%BC%A0%E4%BA%86webshell%E5%A6%82%E4%BD%95%E5%A4%84%E7%BD%AE"><span class="toc-number">3.8.</span> <span class="toc-text">8、发现客户端被传了webshell如何处置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%8F%91%E7%8E%B0%E7%9A%84"><span class="toc-number">3.8.1.</span> <span class="toc-text">如何发现的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#webshell%E9%83%BD%E5%B9%B2%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%8C%E8%AF%A5%E6%9F%A5%E4%BB%80%E4%B9%88%E6%97%A5%E5%BF%97"><span class="toc-number">3.8.2.</span> <span class="toc-text">webshell都干了什么，该查什么日志</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9%E3%80%81%E8%8E%B7%E5%8F%96%E4%BA%86%E6%94%BB%E5%87%BB%E8%80%85ip%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E6%BA%AF%E6%BA%90"><span class="toc-number">3.9.</span> <span class="toc-text">9、获取了攻击者ip如何进行溯源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10%E3%80%81%E5%A6%82%E6%9E%9C%E7%88%86%E5%8F%91%E4%BA%860Day%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86"><span class="toc-number">3.10.</span> <span class="toc-text">10、如果爆发了0Day如何处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11%E3%80%81Linux%E4%B8%8B%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81"><span class="toc-number">3.11.</span> <span class="toc-text">11、Linux下权限维持</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#12%E3%80%81%E5%86%85%E7%BD%91%E4%BB%A3%E7%90%86%E6%AD%A3%E5%90%91%E4%B8%8E%E5%8F%8D%E5%90%91"><span class="toc-number">3.12.</span> <span class="toc-text">12、内网代理正向与反向</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A3%E5%90%91%E4%BB%A3%E7%90%86"><span class="toc-number">3.12.1.</span> <span class="toc-text">正向代理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86"><span class="toc-number">3.12.2.</span> <span class="toc-text">反向代理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#13%E3%80%81Redis%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE%E4%B8%8E%E6%9D%83%E9%99%90%E8%8E%B7%E5%8F%96"><span class="toc-number">3.13.</span> <span class="toc-text">13、Redis未授权访问与权限获取</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#14%E3%80%81%E5%8F%8D%E6%9F%A5%E7%9C%9F%E5%AE%9Eip"><span class="toc-number">3.14.</span> <span class="toc-text">14、反查真实ip</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#15%E3%80%81webshell%E6%9F%A5%E6%89%BE"><span class="toc-number">3.15.</span> <span class="toc-text">15、webshell查找</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#16%E3%80%81sql%E6%B3%A8%E5%85%A5%E7%89%B9%E5%BE%81"><span class="toc-number">3.16.</span> <span class="toc-text">16、sql注入特征</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#17%E3%80%81Linux%E4%B8%8B%E6%95%8F%E6%84%9F%E6%96%87%E4%BB%B6"><span class="toc-number">3.17.</span> <span class="toc-text">17、Linux下敏感文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#18%E3%80%81%E6%9F%A5%E5%88%B0%E6%94%BB%E5%87%BB%E8%80%85QQ%E6%80%8E%E4%B9%88%E5%88%86%E6%9E%90"><span class="toc-number">3.18.</span> <span class="toc-text">18、查到攻击者QQ怎么分析</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x03"><span class="toc-number">4.</span> <span class="toc-text">0x03</span></a></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/08/22/drozer%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6%E5%AE%89%E8%A3%85%E4%B8%8E%E6%B5%8B%E8%AF%95/" title="drozer安全测试框架安装与测试"><img src="https://i.loli.net/2021/08/22/RUqfSFolvnXAriM.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="drozer安全测试框架安装与测试"/></a><div class="content"><a class="title" href="/2021/08/22/drozer%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6%E5%AE%89%E8%A3%85%E4%B8%8E%E6%B5%8B%E8%AF%95/" title="drozer安全测试框架安装与测试">drozer安全测试框架安装与测试</a><time datetime="2021-08-22T14:08:30.763Z" title="更新于 2021-08-22 22:08:30">2021-08-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/05/26/Web%E7%99%BD%E5%B8%BD%E5%AD%90%E5%AD%A6%E4%B9%A0%E4%B9%8Bpython/" title="Web白帽子学习之python"><img src="https://i.loli.net/2021/05/26/8lZwKsRLpiaeuMg.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web白帽子学习之python"/></a><div class="content"><a class="title" href="/2021/05/26/Web%E7%99%BD%E5%B8%BD%E5%AD%90%E5%AD%A6%E4%B9%A0%E4%B9%8Bpython/" title="Web白帽子学习之python">Web白帽子学习之python</a><time datetime="2021-07-21T11:47:46.518Z" title="更新于 2021-07-21 19:47:46">2021-07-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/30/%E3%80%90%E5%BF%85%E7%9C%8B%E3%80%91%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E6%B3%95/" title="【必读】网络安全法"><img src="https://i.loli.net/2021/06/30/aME6UL9Kito5Ixq.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="【必读】网络安全法"/></a><div class="content"><a class="title" href="/2021/06/30/%E3%80%90%E5%BF%85%E7%9C%8B%E3%80%91%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E6%B3%95/" title="【必读】网络安全法">【必读】网络安全法</a><time datetime="2021-07-19T14:41:30.226Z" title="更新于 2021-07-19 22:41:30">2021-07-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/07/19/Weblogic%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" title="Weblogic10.3.6漏洞复现"><img src="https://i.loli.net/2021/07/19/1G8RfFL9JhYPyTn.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Weblogic10.3.6漏洞复现"/></a><div class="content"><a class="title" href="/2021/07/19/Weblogic%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" title="Weblogic10.3.6漏洞复现">Weblogic10.3.6漏洞复现</a><time datetime="2021-07-19T14:37:08.638Z" title="更新于 2021-07-19 22:37:08">2021-07-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/26/LinuxDeploy%E5%AE%89%E8%A3%85Centos/" title="Linux Deploy安装Centos"><img src="https://i.loli.net/2021/06/28/85JkjqeviTBGXyY.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux Deploy安装Centos"/></a><div class="content"><a class="title" href="/2021/06/26/LinuxDeploy%E5%AE%89%E8%A3%85Centos/" title="Linux Deploy安装Centos">Linux Deploy安装Centos</a><time datetime="2021-07-19T14:31:37.938Z" title="更新于 2021-07-19 22:31:37">2021-07-19</time></div></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://i.loli.net/2021/03/08/vOTql8wJML4hQAp.jpg)"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By Shawn</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">相见即是缘分，少年！有空常来啊...</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><div class="js-pjax"><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    $.getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js', function () {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      false && mermaid.init()
+    })
+  }
+}</script><script>function loadValine () {
+  function initValine () {
+    let initData = {
+      el: '#vcomment',
+      appId: 'gQCglyv92NlaWrGjAf1ANbbf-MdYXbMMI',
+      appKey: 'VxmLj0u0vjDuqJ5cHMH1w5CT',
+      placeholder: '少年！都到这儿了不留下点什么吗！！',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+    }
+
+    if (true) { 
+      initData.requiredFields= ('nick,mail'.split(','))
+    }
+    
+    if (false) {
+      const otherData = false
+      initData = Object.assign({}, initData, otherData)
+    }
+    
+    const valine = new Valine(initData)
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else $.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js', initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.querySelector('#vcomment'),loadValine)
+  else setTimeout(() => loadValine(), 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="https://myhkw.cn/player/js/player.js" id="myhk" key="161172509791" m="1"></script><script>(function(){
+  const bp = document.createElement('script');
+  const curProtocol = window.location.protocol.split(':')[0];
+  if (curProtocol === 'https'){
+  bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+  }
+  else{
+  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+  }
+  bp.dataset.pjax = ''
+  const s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(bp, s);
+})()</script></div></body></html>

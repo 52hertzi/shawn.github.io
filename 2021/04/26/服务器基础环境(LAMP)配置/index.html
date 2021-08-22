@@ -1,0 +1,453 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>服务器基础环境(LAMP)配置 | 52hertzi</title><meta name="keywords" content="服务器,Lamp,FTP"><meta name="author" content="Shawn"><meta name="copyright" content="Shawn"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="0x00 前言曾经入手服务器的时候都喜欢先安装已给宝塔面板，全部都一步到位安装环境！！但是真正的企业里肯定是不会这么干的……毕竟宝塔也是爆过漏洞的（想起某个紧张且兴奋的夜晚）。接下来慢慢的安装FTP、Apache、MySql、PHP的环境。 次此权当无聊了罢，做个记录 （曾经虚拟机都不知重装了多少QWQ） 环境服务器：Center 7.6 x64  0x01 FTP安装简介FTP (文件传输协议)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="服务器基础环境(LAMP)配置">
+<meta property="og:url" content="http://52hertzi.com/2021/04/26/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%9F%BA%E7%A1%80%E7%8E%AF%E5%A2%83(LAMP)%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="52hertzi">
+<meta property="og:description" content="0x00 前言曾经入手服务器的时候都喜欢先安装已给宝塔面板，全部都一步到位安装环境！！但是真正的企业里肯定是不会这么干的……毕竟宝塔也是爆过漏洞的（想起某个紧张且兴奋的夜晚）。接下来慢慢的安装FTP、Apache、MySql、PHP的环境。 次此权当无聊了罢，做个记录 （曾经虚拟机都不知重装了多少QWQ） 环境服务器：Center 7.6 x64  0x01 FTP安装简介FTP (文件传输协议)">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/04/28/xYlh3vj2L1UouWB.jpg">
+<meta property="article:published_time" content="2021-04-26T11:42:00.000Z">
+<meta property="article:modified_time" content="2021-06-30T14:35:15.002Z">
+<meta property="article:author" content="Shawn">
+<meta property="article:tag" content="服务器">
+<meta property="article:tag" content="Lamp">
+<meta property="article:tag" content="FTP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/04/28/xYlh3vj2L1UouWB.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://52hertzi.com/2021/04/26/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%9F%BA%E7%A1%80%E7%8E%AF%E5%A2%83(LAMP)%E9%85%8D%E7%BD%AE/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="preconnect" href="//zz.bdstatic.com"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Shawn","link":"链接: ","source":"来源: 52hertzi","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-06-30 22:35:15'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://i.loli.net/2020/11/09/qgoaAWLQdRIs7uD.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">17</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">28</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 生活</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-envira"></i><span> 说说</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://i.loli.net/2021/04/28/bq6MiGTBRKVrU5W.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">52hertzi</a></span><span id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 生活</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-envira"></i><span> 说说</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><h1 class="post-title">服务器基础环境(LAMP)配置</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-04-26T11:42:00.000Z" title="发表于 2021-04-26 19:42:00">2021-04-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-06-30T14:35:15.002Z" title="更新于 2021-06-30 22:35:15">2021-06-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>10分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h1><p>曾经入手服务器的时候都喜欢先安装已给宝塔面板，全部都一步到位安装环境！！但是真正的企业里肯定是不会这么干的……毕竟宝塔也是爆过漏洞的（想起某个紧张且兴奋的夜晚）。接下来慢慢的安装FTP、Apache、MySql、PHP的环境。</p>
+<p>次此权当无聊了罢，做个记录</p>
+<p>（曾经虚拟机都不知重装了多少QWQ）</p>
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>服务器：Center 7.6 x64</p>
+<p><img src="https://i.loli.net/2021/04/25/ElrOp5mYvJk7jVf.png"></p>
+<h1 id="0x01-FTP安装"><a href="#0x01-FTP安装" class="headerlink" title="0x01 FTP安装"></a>0x01 FTP安装</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p><strong>FTP (文件传输协议)</strong> ，是用于网络上的文件传输协议。安装FTP将会更好的帮助咱上传下载文件（增、删、改、查）。</p>
+<p>本地安装可能还需要配置防火墙，这里不赘述！！就是开启个端口而已！！</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install vsftpd ftp</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/04/25/LzjmrFHsyJZWMP5.png"></p>
+<p>查看ftp的安装位置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">whereis vsftpd</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/04/25/tDa6Lhd8rusiyKv.png"></p>
+<p>etc/vsftpd 目录下有四个文件</p>
+<blockquote>
+<p>1、ftpusers 文件 指定哪些用户不能访问 ftp 服务，这些用户是指 Linux 系统用户还是包括虚拟用户？</p>
+<p>2、user_list 文件 用户列表，当 vsftpd 里 userlist_deny=NO时，只允许这里的用户访问 ftp 服务，注意此时同时也检测 ftpusers 文件；当 vsftpd 里 userlist_deny=YES（默认） 时，不允许这里的用户 访问 ftp 服务</p>
+<p>3、vsftpd.conf 文件 是 vsftpd 的核心配置文件 </p>
+<p>4、vsftpd_conf_migrate.sh 文件 是 vsftpd 操作的一些变量和设置脚本</p>
+</blockquote>
+<p>开启FTP服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start vsftpd</span><br></pre></td></tr></table></figure>
+
+<p>查看FTP的状态</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl status vsftpd</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/04/25/qSnloGv7HtUK9PE.png"></p>
+<h2 id="编辑配置"><a href="#编辑配置" class="headerlink" title="编辑配置"></a>编辑配置</h2><p>编辑**/etc/vsftpd/vsftpd.conf** </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">主要编辑的几个核心基础配置如下</span></span><br><span class="line">anonymous_enable=NO 是否允许匿名登录</span><br><span class="line"></span><br><span class="line">local_enable=YES 是否允许本地账号(系统账号)登录</span><br><span class="line"></span><br><span class="line">write_enable=YES 是否运行上传操作，如果要运行上传那么就要开启这个配置</span><br><span class="line"></span><br><span class="line">listen=NO ftp服务的运行模式，=NO时表示xinetd模式；=YES时表示standlone模式。</span><br><span class="line"></span><br><span class="line">userlist_enable=NO 控制 user_list 的功能</span><br></pre></td></tr></table></figure>
+
+<p>编辑ftpuser</p>
+<blockquote>
+<p>这个文件相当是黑名单，将root用户从这里面删除</p>
+</blockquote>
+<p>编辑user_list</p>
+<blockquote>
+<p>这个文件相当于白名单，将除root以外的用户删除</p>
+</blockquote>
+<p>重启ftp服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart vsftpd.service</span><br></pre></td></tr></table></figure>
+
+<p>使用系统用户root登陆</p>
+<p><img src="https://i.loli.net/2021/04/25/LOHnCTFkae5Xf87.png"></p>
+<h2 id="虚拟用户创建"><a href="#虚拟用户创建" class="headerlink" title="虚拟用户创建"></a>虚拟用户创建</h2><p>如若多人需要使用ftp文件服务，可以创建虚拟用户。</p>
+<p>此时root用户无法登陆FTP（我这里就不折腾root用户了）。</p>
+<blockquote>
+<p>ftp有三种登陆方式:</p>
+<ul>
+<li>匿名登陆：存在安全隐患，故在配置文件中关闭。</li>
+<li>系统账户：以root及普通账户登陆。</li>
+<li>虚拟用户：系统账户存在安全隐患，不适于大型ftp场景，虚拟用户登陆方式相对安全。</li>
+</ul>
+</blockquote>
+<h3 id="映射账户"><a href="#映射账户" class="headerlink" title="映射账户"></a>映射账户</h3><p>建立系统账户shawn，以此映射虚拟账户</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">useradd shawn -d /home/shawn -s /sbin/nologin</span><br><span class="line"><span class="meta">#</span><span class="bash">添加shawn用户，并在/home目录下创建shawn目录作为根目录，并禁止其登陆系统（ssh）</span></span><br><span class="line"><span class="meta">#</span><span class="bash">接下来所有的ftp用户都将映射到此账户。</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/04/26/tSYJnuhECiAZroT.png"></p>
+<p>进入到home目录下，修改shawn目录的权限</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">chmod 755 shawn/</span><br><span class="line"><span class="meta">#</span><span class="bash">第一个7:表示当前文件的拥有者的权限, 可读可写可执行权限</span></span><br><span class="line"><span class="meta">#</span><span class="bash">第二个5:表示当前文件的所属组（同组用户）权限,可读可执行权限</span></span><br><span class="line"><span class="meta">#</span><span class="bash">第三个5:表示当前文件的组外权限,可读可执行权限</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/04/26/AdW16cgC8LsvkBK.png"></p>
+<p>在shawn目录下创建文件hello.shawn</p>
+<p>以及目录111的目录</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">touch hello.shawn</span><br><span class="line">mkdir -p 111</span><br></pre></td></tr></table></figure>
+
+<h3 id="FTP虚拟账户"><a href="#FTP虚拟账户" class="headerlink" title="FTP虚拟账户"></a>FTP虚拟账户</h3><p>在/etc/vsftpd目录下创建存储用户的文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vim user</span><br><span class="line"><span class="meta">#</span><span class="bash">1 奇数行为登录名--<span class="built_in">test</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">2 偶数行为登陆密码--123456</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/04/26/gHc8MUKexoz5LlS.png"></p>
+<blockquote>
+<p>此时此账户还无法被vsftpd所认证，即无法进行远程登陆。同时明文存储的账户信息也是不安全的，所以需要进行一下转换。</p>
+<p>使用db_load命令 hash算法将明文信息虚拟用户文件转换成db文件</p>
+<p>并降低此文件的权限，只有root用户可实行读写</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db_load -T -t hash -f /etc/vsftpd/user /etc/vsftpd/user.db</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod 600 /etc/vsftpd/user.db</span><br></pre></td></tr></table></figure>
+
+<p>现在虚拟用户和用于映射的user账户都有了</p>
+<p>接下来需要让ftp找到虚拟用户文件进行认证</p>
+<h3 id="PAM认证配置"><a href="#PAM认证配置" class="headerlink" title="PAM认证配置"></a>PAM认证配置</h3><blockquote>
+<p>PAM（可插拔认证模块）</p>
+<p> <a target="_blank" rel="noopener" href="https://baike.baidu.com/item/PAM/62025">PAM</a>（Pluggable Authentication Modules ）是由Sun提出的一种认证机制，</p>
+<p>通过提供一些<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93/100352">动态链接库</a>和一套统一的API，将系统提供的服务 和该服务的认证方式分开，使得系统管理员可以灵活地根据需要给不同的服务配置不同的认证方式而无需更改服务程序，同时也便于向系统中添加新的认证手段。</p>
+</blockquote>
+<p>新建一个用于虚拟用户认证的PAM配置文件vsftpd.user</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/pam.d/vsftpd.user</span><br></pre></td></tr></table></figure>
+
+<p>并写入以下配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">auth sufficient /lib64/security/pam_userdb.so db=/etc/vsftpd/user</span><br><span class="line">account sufficient /lib64/security/pam_userdb.so db=/etc/vsftpd/user</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/04/26/DHTZ5LYCgVOsoMj.png"></p>
+<p>配置ftp主配置文件(etc/vsftpd/vsftpd.conf)，使服务启动时，能够找到认证文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">guest_enable=YES</span><br><span class="line"><span class="meta">#</span><span class="bash">添加：支持虚拟用户</span></span><br><span class="line">guest_username=shawn</span><br><span class="line"><span class="meta">#</span><span class="bash">添加：虚拟用户指定映射账户</span></span><br><span class="line">allow_writeable_chroot=YES</span><br><span class="line"><span class="meta">#</span><span class="bash">添加：支持虚拟用户的读写</span></span><br><span class="line">pam_service_name=vsftpd.user</span><br><span class="line"><span class="meta">#</span><span class="bash">修改：pam认证的文件</span></span><br><span class="line">user_config_dir=/etc/vsftpd/userconfig</span><br><span class="line"><span class="meta">#</span><span class="bash">添加：虚拟用户的控制文件路径</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="虚拟用户配置"><a href="#虚拟用户配置" class="headerlink" title="虚拟用户配置"></a>虚拟用户配置</h3><p> 配置虚拟用户文件，对不同的登录用户进行不同的控制。</p>
+<p> 在etc/vsftpd文件目录下新建一个文件目录userconfig</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p userconfig</span><br></pre></td></tr></table></figure>
+
+<p>进入到此目录下创建登陆用户的同名文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">touch test</span><br><span class="line">vim test</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/04/26/hogaAjV5dDir2fK.png"></p>
+<p>写入以下配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">local_root=/home/shawn</span><br><span class="line"><span class="meta">#</span><span class="bash">虚拟用户登陆后会访问到的目录,根据实际需求访问各自的目录</span></span><br><span class="line">write_enable=YES</span><br><span class="line"><span class="meta">#</span><span class="bash">是否可写</span></span><br><span class="line">anon_umask=022</span><br><span class="line">anon_world_readable_only=NO</span><br><span class="line"><span class="meta">#</span><span class="bash">是否只可读</span></span><br><span class="line">anon_upload_enable=YES</span><br><span class="line"><span class="meta">#</span><span class="bash">可上传</span></span><br><span class="line">anon_mkdir_write_enable=YES</span><br><span class="line"><span class="meta">#</span><span class="bash">可建立目录可写</span></span><br><span class="line">anon_other_write_enable=YES</span><br><span class="line">download_enable=YES</span><br><span class="line"><span class="meta">#</span><span class="bash">可下载</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/04/26/wrVP3qTno2Bz5Zg.png"></p>
+<p><strong><em>注意</em></strong></p>
+<blockquote>
+<p>每一句配置后若有多余的空格，就会无法连接！！<strong>注意空格 ！ ！ ！</strong></p>
+</blockquote>
+<p>重启FTP服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart vsftpd.service</span><br></pre></td></tr></table></figure>
+
+<p>使用test账户连接FTP服务</p>
+<p><img src="https://i.loli.net/2021/04/26/GbnMTDw3oz4KZeS.png"></p>
+<h1 id="0x02-Apache安装"><a href="#0x02-Apache安装" class="headerlink" title="0x02 Apache安装"></a>0x02 Apache安装</h1><h2 id="简介-1"><a href="#简介-1" class="headerlink" title="简介"></a>简介</h2><p> Apache(音译为阿帕奇是世界使用排名第一的Web服务器软件。它可以运行在几乎所有广泛使用的计算机平台上，由于其跨平台和安全性被广泛使用，是最流行的Web服务器端软件之一。它快速、可靠并且可通过简单的API扩充，将Perl/Python等解释器编译到服务器中。</p>
+<h2 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h2><p>使用yum安装</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install httpd</span><br></pre></td></tr></table></figure>
+
+<p>开启apache服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start httpd</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/04/27/mygdUP1oa2fzQcp.png"></p>
+<p>只要80端口是开启状态，那么就可以直接输入ip进行访问</p>
+<blockquote>
+<p>进入到默认站点的存放位置**/var/www/html**目录下，创建一个html文件,写入一个h1标签的hello,shawn</p>
+</blockquote>
+<p><img src="https://i.loli.net/2021/04/27/dWMbgHJPz1Cn24A.png"></p>
+<h2 id="配置端口站点"><a href="#配置端口站点" class="headerlink" title="配置端口站点"></a>配置端口站点</h2><p>默认情况下一般使用的是80端口，那么这里再添加一个8080端口的站点</p>
+<p>apache的配置文件**/etc/httpd/conf/httpd.conf**</p>
+<p>添加端口8080，云服务器还需要到控制台打开8080端口</p>
+<p><img src="https://i.loli.net/2021/04/27/Sn1BqRuaZLzc5gY.png"></p>
+<p>保存退出后进入到**/etc/httpd/conf/conf.d**目录下</p>
+<p>创建站点配置文件，文件名随意，后缀名必须为<strong>conf</strong></p>
+<p><img src="https://i.loli.net/2021/04/27/2ySmUqi6ILzekZA.png"></p>
+<p>文件内容如下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Virtual Hosts</span></span><br><span class="line">&lt;VirtualHost *:8080&gt;</span><br><span class="line">  ServerName localhost       #域名，若无默认此即可</span><br><span class="line">  ServerAlias localhost		#泛域名使用</span><br><span class="line">  DocumentRoot &quot;/var/www/hello&quot;</span><br><span class="line">  &lt;Directory &quot;/var/www/hello&quot;&gt;</span><br><span class="line">    Options +Indexes +Includes +FollowSymLinks +MultiViews</span><br><span class="line">    AllowOverride All</span><br><span class="line">    Require all granted</span><br><span class="line">  &lt;/Directory&gt;</span><br><span class="line">&lt;/VirtualHost&gt;</span><br></pre></td></tr></table></figure>
+
+<p>在**/var/www/hello**目录下写入html文件，进行ip访问</p>
+<p><img src="https://i.loli.net/2021/04/27/wB6xnLSaropd5Oi.png"></p>
+<h2 id="解析PHP文件"><a href="#解析PHP文件" class="headerlink" title="解析PHP文件"></a>解析PHP文件</h2><p>编辑**/etc/httpd/conf/httpd.conf**</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 搜索关键字，匹配到如下配置</span></span><br><span class="line"></span><br><span class="line">&lt;IfModule dir_module&gt;</span><br><span class="line">    DirectoryIndex index.html</span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 修改为</span></span><br><span class="line"></span><br><span class="line">&lt;IfModule dir_module&gt;</span><br><span class="line">    DirectoryIndex index.html index.php</span><br><span class="line">&lt;/IfModule&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/04/28/o4CRGOHnN2Uy9Xk.png"></p>
+<p>再搜索AddType关键字，在此配置后面加上如下配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">AddType application/x-httpd-php .php</span><br><span class="line">AddType application/x-httpd-php .php .phtml .php3</span><br><span class="line">AddType application/x-httpd-php-source .phps</span><br><span class="line"></span><br><span class="line">&lt;FilesMatch \.php$&gt;</span><br><span class="line">    SetHandler application/x-httpd-php</span><br><span class="line">&lt;/FilesMatch&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/04/28/Y7lLxJbHngN4aVq.png"></p>
+<p>重启apche服务即可</p>
+<p>接下来即可正常解析PHP文件。</p>
+<h2 id="SSL配置"><a href="#SSL配置" class="headerlink" title="SSL配置"></a>SSL配置</h2><p>手上暂无域名，后面买了再来补！！</p>
+<h1 id="0x03-MySQL"><a href="#0x03-MySQL" class="headerlink" title="0x03 MySQL"></a>0x03 MySQL</h1><h2 id="简介-2"><a href="#简介-2" class="headerlink" title="简介"></a>简介</h2><p>MySQL是一个<strong>关系型数据库管理系统</strong>，由瑞典MySQL AB 公司开发，属于 Oracle旗下产品。MySQL 是最流行的关系型数据库管理系统之一，在 WEB 应用方面，MySQL是最好的 RDBMS (Relational Database Management System，关系数据库管理系统) 应用软件之一。</p>
+<h2 id="安装（5-7版本）"><a href="#安装（5-7版本）" class="headerlink" title="安装（5.7版本）"></a>安装（5.7版本）</h2><p>不同版本安装请前往官网查看相应安装方式。</p>
+<p>使用 wget 下载 5.7 版本的mysql yum</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget http://dev.mysql.com/get/mysql57-community-release-el7-8.noarch.rpm</span><br></pre></td></tr></table></figure>
+
+<p>使用 yum 安装mysql yum</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum localinstall mysql57-community-release-el7-8.noarch.rpm</span><br></pre></td></tr></table></figure>
+
+<p>检测 mysql yum是否安装成功</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum repolist enabled | grep &quot;mysql.*-community.*&quot;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/04/27/cRni3ohtZzuTdNK.png"></p>
+<p>安装mysql服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install mysql-community-server</span><br></pre></td></tr></table></figure>
+
+<p>开启服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start mysqld</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/04/27/wyKxVcq7rX9SWtz.png"></p>
+<h2 id="修改密码"><a href="#修改密码" class="headerlink" title="修改密码"></a>修改密码</h2><p>查看密码</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep &quot;temporary password&quot; /var/log/mysqld.log</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/04/27/5GCMTgSHzuA9Ldl.png"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -u root -p</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/04/27/aDnGS27WoRpy9hf.png"></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">USER</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;localhost&#x27;</span> <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="string">&#x27;new password&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>mysql默认的密码规则必须包含<strong>特殊字符、大写字母、小写字母、数字、一定长度</strong>。</p>
+<p>如果一定要设置弱密码，可以通过如下命令设置密码规则等级。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> <span class="keyword">global</span> validate_password_policy=<span class="number">0</span>;</span><br><span class="line"><span class="keyword">set</span> <span class="keyword">global</span> validate_password_length=<span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="远程连接设置"><a href="#远程连接设置" class="headerlink" title="远程连接设置"></a>远程连接设置</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#任何主机均可连接，password为登陆密码</span></span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">ALL</span> <span class="keyword">PRIVILEGES</span> <span class="keyword">ON</span> *.* <span class="keyword">TO</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;%&#x27;</span> <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="string">&#x27;password&#x27;</span> <span class="keyword">WITH</span> <span class="keyword">GRANT</span> <span class="keyword">OPTION</span>;</span><br><span class="line"><span class="comment">#指定主机方可连接</span></span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">ALL</span> <span class="keyword">PRIVILEGES</span> <span class="keyword">ON</span> *.* <span class="keyword">TO</span> <span class="string">&#x27;xxxx&#x27;</span>@’xx.xx.xx.xx’ <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="string">&#x27;xxxx&#x27;</span> <span class="keyword">WITH</span> <span class="keyword">GRANT</span> <span class="keyword">OPTION</span>;</span><br><span class="line"><span class="comment">#刷新权限</span></span><br><span class="line"><span class="keyword">flush</span> <span class="keyword">privileges</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/04/27/aFQgMRZmiWyole2.png"></p>
+<h2 id="设置固定ip登陆"><a href="#设置固定ip登陆" class="headerlink" title="设置固定ip登陆"></a>设置固定ip登陆</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> mysql;</span><br><span class="line"><span class="keyword">update</span> <span class="keyword">user</span> <span class="keyword">set</span> host = <span class="string">&#x27;%&#x27;</span> <span class="keyword">where</span> <span class="keyword">user</span> = <span class="string">&#x27;root&#x27;</span>;</span><br><span class="line"><span class="comment"># %表示所有ip，如果指定某个ip或者用户，则修改host为相应的ip，user为相应对象。</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>当重置密码退出后再重新登入爆以下错误</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ERROR 1045 (28000): Access denied for user &#x27;root&#x27;@&#x27;localhost&#x27; (using password: YES)</span><br></pre></td></tr></table></figure>
+
+<h3 id="停止mysql服务"><a href="#停止mysql服务" class="headerlink" title="停止mysql服务"></a>停止mysql服务</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl stop mysqld.service</span><br></pre></td></tr></table></figure>
+
+<h3 id="修改配置文件为无密码登陆"><a href="#修改配置文件为无密码登陆" class="headerlink" title="修改配置文件为无密码登陆"></a>修改配置文件为无密码登陆</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/my.cnf</span><br></pre></td></tr></table></figure>
+
+<p>在最尾部加上</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">skip-grant-tables</span><br></pre></td></tr></table></figure>
+
+<p>保存退出后登陆数据库</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -u root</span><br></pre></td></tr></table></figure>
+
+<h3 id="修改密码-1"><a href="#修改密码-1" class="headerlink" title="修改密码"></a>修改密码</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">use mysql;</span><br><span class="line">update mysql.user set authentication_string=password(&#x27;password&#x27;) where user=&#x27;root&#x27;;</span><br><span class="line">flush privileges; </span><br></pre></td></tr></table></figure>
+
+<p>退出修改配置文件，将之间加skip-grant-tables配置删除，保存退出即可！</p>
+<h1 id="0x04-PHP"><a href="#0x04-PHP" class="headerlink" title="0x04 PHP"></a>0x04 PHP</h1><h2 id="简介-3"><a href="#简介-3" class="headerlink" title="简介"></a>简介</h2><p>PHP（Pre Hypertext Preprocessor）即超文本预处理器，是在服务器端执行的脚本语言，尤其适用于Web开发并可嵌入HTML中。PHP语法利用了C、Java和Perl，该语言的主要目标是允许web开发人员快速编写动态网页。</p>
+<blockquote>
+<p>这里原本采用的是编译安装的方式，但是编译安装后还是存在一些目前解决不了的问题。</p>
+<p>怪折腾人的QWQ</p>
+<p>后面还是得单独把编译安装搞一搞。</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_27715357/article/details/106734411">参考文章</a></p>
+<h2 id="添加EPEL和REMI存储库"><a href="#添加EPEL和REMI存储库" class="headerlink" title="添加EPEL和REMI存储库"></a>添加EPEL和REMI存储库</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install epel-release</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install https://rpms.remirepo.net/enterprise/remi-release-7.rpm</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="安装PHP-7-4-16版本"><a href="#安装PHP-7-4-16版本" class="headerlink" title="安装PHP 7.4.16版本"></a>安装PHP 7.4.16版本</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install yum-utils</span><br></pre></td></tr></table></figure>
+
+<p>查看仓库的php版本</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum repolist all | grep php</span><br></pre></td></tr></table></figure>
+
+<p>选择remi-php74版本</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum-config-manager --enable remi-php74</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="安装依赖以及扩展"><a href="#安装依赖以及扩展" class="headerlink" title="安装依赖以及扩展"></a>安装依赖以及扩展</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install php  php-cli php-fpm php-mysqlnd php-zip php-devel php-gd php-mcrypt php-mbstring php-curl php-xml php-pear php-bcmath php-json php-redis</span><br></pre></td></tr></table></figure>
+
+<p>查看php版本</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php -v</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/04/27/NW2k5ShV8DfGznJ.png"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Shawn</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://52hertzi.com/2021/04/26/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%9F%BA%E7%A1%80%E7%8E%AF%E5%A2%83(LAMP)%E9%85%8D%E7%BD%AE/">http://52hertzi.com/2021/04/26/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%9F%BA%E7%A1%80%E7%8E%AF%E5%A2%83(LAMP)%E9%85%8D%E7%BD%AE/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://52hertzi.com" target="_blank">52hertzi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a><a class="post-meta__tags" href="/tags/Lamp/">Lamp</a><a class="post-meta__tags" href="/tags/FTP/">FTP</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/04/28/xYlh3vj2L1UouWB.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://i.loli.net/2020/11/09/NkrICVse9BUfKMx.png" target="_blank"><img class="post-qr-code-img" src="https://i.loli.net/2020/11/09/NkrICVse9BUfKMx.png" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://i.loli.net/2020/11/09/kLFt7qs1woZvu4x.jpg" target="_blank"><img class="post-qr-code-img" src="https://i.loli.net/2020/11/09/kLFt7qs1woZvu4x.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/05/12/SQL%E9%98%B2%E6%B3%A8%E5%85%A5%E4%B9%8BPDO%E9%A2%84%E5%A4%84%E7%90%86%E5%8E%9F%E7%90%86/"><img class="prev-cover" src="https://i.loli.net/2021/05/12/mRAhy1DusTaJY7x.png" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">SQL防注入之PDO预处理原理</div></div></a></div><div class="next-post pull-right"><a href="/2021/04/20/%E5%A4%B1%E8%B4%A5%E7%9A%84%E6%B8%97%E9%80%8F%E7%BB%B4%E6%8C%81%E5%A7%BF%E5%8A%BF/"><img class="next-cover" src="https://i.loli.net/2021/04/20/qovg5OXWeKzacwE.png" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">失败的渗透维持姿势</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://i.loli.net/2020/11/09/qgoaAWLQdRIs7uD.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Shawn</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">17</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">28</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/52hertzi"><i class="fab fa-github"></i><span>Follow Me</span></a></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">2020 实鼠不易 , 2021 牛转乾坤！淦</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x00-%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">0x00 前言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83"><span class="toc-number">1.1.</span> <span class="toc-text">环境</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-FTP%E5%AE%89%E8%A3%85"><span class="toc-number">2.</span> <span class="toc-text">0x01 FTP安装</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">2.1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-number">2.2.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%BE%91%E9%85%8D%E7%BD%AE"><span class="toc-number">2.3.</span> <span class="toc-text">编辑配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E7%94%A8%E6%88%B7%E5%88%9B%E5%BB%BA"><span class="toc-number">2.4.</span> <span class="toc-text">虚拟用户创建</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%98%A0%E5%B0%84%E8%B4%A6%E6%88%B7"><span class="toc-number">2.4.1.</span> <span class="toc-text">映射账户</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FTP%E8%99%9A%E6%8B%9F%E8%B4%A6%E6%88%B7"><span class="toc-number">2.4.2.</span> <span class="toc-text">FTP虚拟账户</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PAM%E8%AE%A4%E8%AF%81%E9%85%8D%E7%BD%AE"><span class="toc-number">2.4.3.</span> <span class="toc-text">PAM认证配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E7%94%A8%E6%88%B7%E9%85%8D%E7%BD%AE"><span class="toc-number">2.4.4.</span> <span class="toc-text">虚拟用户配置</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02-Apache%E5%AE%89%E8%A3%85"><span class="toc-number">3.</span> <span class="toc-text">0x02 Apache安装</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B-1"><span class="toc-number">3.1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-1"><span class="toc-number">3.2.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E7%AB%AF%E5%8F%A3%E7%AB%99%E7%82%B9"><span class="toc-number">3.3.</span> <span class="toc-text">配置端口站点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E6%9E%90PHP%E6%96%87%E4%BB%B6"><span class="toc-number">3.4.</span> <span class="toc-text">解析PHP文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SSL%E9%85%8D%E7%BD%AE"><span class="toc-number">3.5.</span> <span class="toc-text">SSL配置</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x03-MySQL"><span class="toc-number">4.</span> <span class="toc-text">0x03 MySQL</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B-2"><span class="toc-number">4.1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%EF%BC%885-7%E7%89%88%E6%9C%AC%EF%BC%89"><span class="toc-number">4.2.</span> <span class="toc-text">安装（5.7版本）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E5%AF%86%E7%A0%81"><span class="toc-number">4.3.</span> <span class="toc-text">修改密码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5%E8%AE%BE%E7%BD%AE"><span class="toc-number">4.4.</span> <span class="toc-text">远程连接设置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E5%9B%BA%E5%AE%9Aip%E7%99%BB%E9%99%86"><span class="toc-number">4.5.</span> <span class="toc-text">设置固定ip登陆</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F"><span class="toc-number">4.6.</span> <span class="toc-text">注意</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%9C%E6%AD%A2mysql%E6%9C%8D%E5%8A%A1"><span class="toc-number">4.6.1.</span> <span class="toc-text">停止mysql服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E4%B8%BA%E6%97%A0%E5%AF%86%E7%A0%81%E7%99%BB%E9%99%86"><span class="toc-number">4.6.2.</span> <span class="toc-text">修改配置文件为无密码登陆</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E5%AF%86%E7%A0%81-1"><span class="toc-number">4.6.3.</span> <span class="toc-text">修改密码</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x04-PHP"><span class="toc-number">5.</span> <span class="toc-text">0x04 PHP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B-3"><span class="toc-number">5.1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0EPEL%E5%92%8CREMI%E5%AD%98%E5%82%A8%E5%BA%93"><span class="toc-number">5.2.</span> <span class="toc-text">添加EPEL和REMI存储库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85PHP-7-4-16%E7%89%88%E6%9C%AC"><span class="toc-number">5.3.</span> <span class="toc-text">安装PHP 7.4.16版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96%E4%BB%A5%E5%8F%8A%E6%89%A9%E5%B1%95"><span class="toc-number">5.4.</span> <span class="toc-text">安装依赖以及扩展</span></a></li></ol></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/08/22/drozer%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6%E5%AE%89%E8%A3%85%E4%B8%8E%E6%B5%8B%E8%AF%95/" title="drozer安全测试框架安装与测试"><img src="https://i.loli.net/2021/08/22/RUqfSFolvnXAriM.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="drozer安全测试框架安装与测试"/></a><div class="content"><a class="title" href="/2021/08/22/drozer%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6%E5%AE%89%E8%A3%85%E4%B8%8E%E6%B5%8B%E8%AF%95/" title="drozer安全测试框架安装与测试">drozer安全测试框架安装与测试</a><time datetime="2021-08-22T14:08:30.763Z" title="更新于 2021-08-22 22:08:30">2021-08-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/05/26/Web%E7%99%BD%E5%B8%BD%E5%AD%90%E5%AD%A6%E4%B9%A0%E4%B9%8Bpython/" title="Web白帽子学习之python"><img src="https://i.loli.net/2021/05/26/8lZwKsRLpiaeuMg.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web白帽子学习之python"/></a><div class="content"><a class="title" href="/2021/05/26/Web%E7%99%BD%E5%B8%BD%E5%AD%90%E5%AD%A6%E4%B9%A0%E4%B9%8Bpython/" title="Web白帽子学习之python">Web白帽子学习之python</a><time datetime="2021-07-21T11:47:46.518Z" title="更新于 2021-07-21 19:47:46">2021-07-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/30/%E3%80%90%E5%BF%85%E7%9C%8B%E3%80%91%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E6%B3%95/" title="【必读】网络安全法"><img src="https://i.loli.net/2021/06/30/aME6UL9Kito5Ixq.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="【必读】网络安全法"/></a><div class="content"><a class="title" href="/2021/06/30/%E3%80%90%E5%BF%85%E7%9C%8B%E3%80%91%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E6%B3%95/" title="【必读】网络安全法">【必读】网络安全法</a><time datetime="2021-07-19T14:41:30.226Z" title="更新于 2021-07-19 22:41:30">2021-07-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/07/19/Weblogic%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" title="Weblogic10.3.6漏洞复现"><img src="https://i.loli.net/2021/07/19/1G8RfFL9JhYPyTn.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Weblogic10.3.6漏洞复现"/></a><div class="content"><a class="title" href="/2021/07/19/Weblogic%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" title="Weblogic10.3.6漏洞复现">Weblogic10.3.6漏洞复现</a><time datetime="2021-07-19T14:37:08.638Z" title="更新于 2021-07-19 22:37:08">2021-07-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/26/LinuxDeploy%E5%AE%89%E8%A3%85Centos/" title="Linux Deploy安装Centos"><img src="https://i.loli.net/2021/06/28/85JkjqeviTBGXyY.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux Deploy安装Centos"/></a><div class="content"><a class="title" href="/2021/06/26/LinuxDeploy%E5%AE%89%E8%A3%85Centos/" title="Linux Deploy安装Centos">Linux Deploy安装Centos</a><time datetime="2021-07-19T14:31:37.938Z" title="更新于 2021-07-19 22:31:37">2021-07-19</time></div></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://i.loli.net/2021/04/28/bq6MiGTBRKVrU5W.jpg)"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By Shawn</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">相见即是缘分，少年！有空常来啊...</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><div class="js-pjax"><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    $.getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js', function () {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      false && mermaid.init()
+    })
+  }
+}</script><script>function loadValine () {
+  function initValine () {
+    let initData = {
+      el: '#vcomment',
+      appId: 'gQCglyv92NlaWrGjAf1ANbbf-MdYXbMMI',
+      appKey: 'VxmLj0u0vjDuqJ5cHMH1w5CT',
+      placeholder: '少年！都到这儿了不留下点什么吗！！',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+    }
+
+    if (true) { 
+      initData.requiredFields= ('nick,mail'.split(','))
+    }
+    
+    if (false) {
+      const otherData = false
+      initData = Object.assign({}, initData, otherData)
+    }
+    
+    const valine = new Valine(initData)
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else $.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js', initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.querySelector('#vcomment'),loadValine)
+  else setTimeout(() => loadValine(), 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="https://myhkw.cn/player/js/player.js" id="myhk" key="161172509791" m="1"></script><script>(function(){
+  const bp = document.createElement('script');
+  const curProtocol = window.location.protocol.split(':')[0];
+  if (curProtocol === 'https'){
+  bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+  }
+  else{
+  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+  }
+  bp.dataset.pjax = ''
+  const s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(bp, s);
+})()</script></div></body></html>

